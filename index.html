@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicCards | Greeting Gallery</title>
+    <style>
+        :root { --primary: #ff4b6e; --sidebar-bg: #f8f9fa; --text-dark: #333; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; background-color: #fff; }
+        #sidebar { width: 250px; background: var(--sidebar-bg); border-right: 1px solid #eee; padding: 20px; box-sizing: border-box; }
+        #sidebar h2 { color: var(--primary); }
+        .menu-item { padding: 12px 15px; margin: 5px 0; color: var(--text-dark); text-decoration: none; border-radius: 8px; cursor: pointer; font-weight: 500; display: block; }
+        .menu-item:hover, .menu-item.active { background: #ffeef1; color: var(--primary); }
+        #main-content { flex: 1; overflow-y: auto; padding: 40px; box-sizing: border-box; }
+        .hero { background: linear-gradient(135deg, #ff4b6e, #ff8e8e); color: white; padding: 30px; border-radius: 20px; margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card-thumbnail { border: 1px solid #eee; border-radius: 15px; overflow: hidden; transition: 0.3s; cursor: pointer; background: white; text-align: center; padding-bottom: 15px; }
+        .card-thumbnail:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .thumbnail-img { height: 120px; background: #fff0f3; display: flex; justify-content: center; align-items: center; font-size: 3rem; }
+        .badge { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <h2>MagicCards ❤️</h2>
+        <div class="menu-item active" onclick="location.reload()">🏠 All Cards</div>
+        <div class="menu-item">💖 Valentine</div>
+        <div class="menu-item">🎂 Birthday</div>
+    </nav>
+
+    <main id="main-content">
+        <div class="hero">
+            <h1>Personalized Greetings</h1>
+            <p>Select a design and add a name.</p>
+        </div>
+
+        <div id="cardGrid" class="grid">
+            <p>Loading cards from spreadsheet...</p>
+        </div>
+    </main>
+
+    <script>
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7Xp2IV6Zt4aMorOp9ivwlDIoO5bQFiFrIS4PCzEiBUeXmgK1WQj7egnZqB3skS7kUYJBE0040OAHh/pub?gid=0&single=true&output=csv';
+
+        async function loadCards() {
+            const grid = document.getElementById('cardGrid');
+            try {
+                const response = await fetch(sheetUrl);
+                const csvText = await response.text();
+                const rows = csvText.split('\n').slice(1); 
+                
+                grid.innerHTML = ''; // Clear the "Loading" text
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length < 4) return;
+
+                    const title = columns[0].trim();
+                    const category = columns[1].trim();
+                    const emoji = columns[2].trim();
+                    const fileName = columns[3].trim();
+
+                    const item = document.createElement('div');
+                    item.className = 'card-thumbnail';
+                    item.onclick = () => {
+                        window.location.href = `create.html?file=cards/${fileName}`;
+                    };
+
+                    item.innerHTML = `
+                        <div class="thumbnail-img">${emoji}</div>
+                        <div class="card-details">
+                            <span class="badge">${category}</span>
+                            <h3 style="margin:10px 0 5px 0;">${title}</h3>
+                        </div>
+                    `;
+                    grid.appendChild(item);
+                });
+            } catch (error) {
+                grid.innerHTML = "Error loading data. If you are on PC, try uploading to GitHub.";
+                console.error(error);
+            }
+        }
+
+        loadCards();
+    </script>
+</body>
+</html>
