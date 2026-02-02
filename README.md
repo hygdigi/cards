@@ -1,2 +1,12 @@
-# cards
-Cards for fun
+MagicCards ❤️ | Viral Interactive Greeting PlatformMagicCards is a "Zero-Cost, Zero-Code" viral platform designed for users to create and share interactive, personalized digital greetings. The site utilizes a Headless CMS architecture, meaning the content is managed via a Google Sheet, allowing for infinite scaling without touching the source code.🚀 The Core VisionTo provide a fast, fun way for the youth demographic to send "prank" or "sentimental" links via WhatsApp and Social Media, monetized through Rewarded Video Ads (Ad-Gate).🛠 Tech Stack (The "Zero-Cost" Stack)Hosting: GitHub Pages (Free static hosting).Database: Google Sheets (Published as CSV for real-time content updates).Environment: GitHub Codespaces (Cloud-based development).Language: Vanilla HTML5, CSS3, and JavaScript (No heavy frameworks).API: AllOrigins (CORS Proxy to bypass browser security blocks).📂 Project ArchitectureThe folder structure is designed for modularity. Every new card is a standalone experience.Plaintext/MagicCards
+├── index.html           # The "Gallery" / Homepage (Auto-populates from Google Sheet)
+├── create.html          # The "Builder" & "Ad-Gate" (Generates the viral links)
+├── database.js          # (Optional) Local backup of card data
+├── cards/               # Parent folder for all templates
+│   ├── valentine/       # Category Folder
+│   │   └── index.html   # The "Impossible No" Prank
+│   ├── birthday/        # Category Folder
+│   │   └── blast.html   # The "Confetti Explosion"
+│   └── apology/         # Category Folder
+│       └── bear.html    # The "Crying Bear" logic
+⚙️ How It Works (The Viral Loop)Discovery: User lands on index.html and sees a grid of trending cards.Creation: User selects a card and is sent to create.html. They enter the recipient's name.Monetization: An "Ad-Gate" is triggered. The user waits/watches an ad while the "Magic Link" is prepared.Distribution: User copies the link or clicks "Share on WhatsApp".The Hook: The recipient opens the link (e.g., .../cards/valentine/index.html?n=Yavya). The page uses URL Parameters to inject the name "Yavya" into the experience.Reciprocity: At the end of the experience, a button invites the recipient to "Create your own," restarting the loop.📊 Content Management (The Google Sheet)To add a new card, you never edit index.html. You simply add a row to the linked Google Sheet:TitleCategoryEmojiFileNameImpossible NoValentine🌹valentine/index.htmlBirthday BlastBirthday🎂birthday/blast.html
