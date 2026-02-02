@@ -3,51 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Magic Card | MagicCards</title>
+    <title>Create Your Magic Card</title>
     <style>
         :root { --primary: #ff4b6e; --bg: #fff0f3; }
-        body { 
-            margin: 0; font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg); display: flex; 
-            justify-content: center; align-items: center; height: 100vh; 
-        }
-        .builder-container {
-            background: white; padding: 40px; border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 75, 110, 0.15);
-            width: 90%; max-width: 450px; text-align: center;
-        }
-        h2 { color: var(--primary); margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
-        
-        input {
-            width: 100%; padding: 15px; margin-bottom: 20px;
-            border: 2px solid #eee; border-radius: 12px;
-            font-size: 1rem; box-sizing: border-box; outline: none;
-        }
-        input:focus { border-color: var(--primary); }
-
-        .btn {
-            background: var(--primary); color: white; border: none;
-            padding: 15px 30px; border-radius: 12px; font-size: 1.1rem;
-            font-weight: bold; cursor: pointer; width: 100%;
-            transition: 0.3s;
-        }
-        .btn:hover { background: #ff335c; transform: translateY(-2px); }
-
-        /* Ad-Gate / Loading Styles */
-        #adGate { display: none; }
-        .loader {
-            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
-            border-radius: 50%; width: 40px; height: 40px;
-            animation: spin 1s linear infinite; margin: 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .result-box {
-            background: #fdf2f4; padding: 20px; border-radius: 15px;
-            margin-top: 20px; border: 2px dashed var(--primary);
-        }
-        .hidden { display: none; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .builder-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 15px 35px rgba(255, 75, 110, 0.15); width: 90%; max-width: 450px; text-align: center; }
+        h2 { color: var(--primary); margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #eee; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; }
+        .result-box { background: #fdf2f4; padding: 20px; border-radius: 15px; margin-top: 20px; border: 2px dashed var(--primary); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -55,73 +20,50 @@
     <div class="builder-container">
         <div id="inputSection">
             <h2>Personalize It ✨</h2>
-            <p>Who is this magical card for?</p>
-            <input type="text" id="recipientName" placeholder="Enter Name (e.g. Sonal)">
-            <button class="btn" onclick="startGeneration()">Generate Magic Link</button>
-        </div>
-
-        <div id="adGate">
-            <h2>Generating Magic...</h2>
-            <div class="loader"></div>
-            <p>Please wait <span id="timer">15</span> seconds while we build your custom card.</p>
-            <div style="background:#eee; height:100px; display:flex; align-items:center; justify-content:center; border-radius:10px; color:#999; margin-bottom:15px;">
-                Your Ad Here
-            </div>
+            <input type="text" id="recipientName" placeholder="Enter Name (e.g. Yavya)">
+            <button class="btn" onclick="generateNow()">Generate Magic Link</button>
         </div>
 
         <div id="resultSection" class="hidden">
             <h2>It's Ready! ❤️</h2>
-            <p>Copy the link below and send it to them.</p>
             <div class="result-box">
-                <input type="text" id="finalLink" readonly style="margin-bottom:10px; border:1px solid #ddd;">
-                <button class="btn" style="background:#2ecc71;" onclick="copyLink()">Copy to Clipboard</button>
+                <input type="text" id="finalLink" readonly style="width:100%; margin-bottom:10px; border:1px solid #ddd; padding:10px; border-radius:8px;">
+                <button class="btn" style="background:#2ecc71;" onclick="copyLink()">Copy Link</button>
             </div>
-            <p style="font-size: 0.8rem; margin-top:15px;">Send it via WhatsApp, Instagram, or Messenger!</p>
+            <p><a href="" id="previewLink" target="_blank" style="color:var(--primary); font-size:0.9rem;">Test Preview</a></p>
         </div>
     </div>
 
     <script>
-        // 1. Get the file path from the homepage (e.g., cards/valentine-prank.html)
+        // 1. Get the file info from the URL
         const urlParams = new URLSearchParams(window.location.search);
-        const targetFile = urlParams.get('file') || 'cards/valentine-sonal.html';
+        // This will now expect something like "valentine/impossibleno.html" from your sheet
+        let targetFile = urlParams.get('file') || 'valentine/impossibleno.html';
 
-        function startGeneration() {
+        function generateNow() {
             const name = document.getElementById('recipientName').value;
-            if(!name) return alert("Please enter a name first!");
+            if(!name) return alert("Please enter a name!");
 
-            // Show Ad-Gate
-            document.getElementById('inputSection').style.display = 'none';
-            document.getElementById('adGate').style.display = 'block';
-
-            // Start Timer (Simulating Ad-Watch)
-            let timeLeft = 15;
-            const countdown = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if(timeLeft <= 0) {
-                    clearInterval(countdown);
-                    finishGeneration(name);
-                }
-            }, 1000);
-        }
-
-        function finishGeneration(name) {
-            document.getElementById('adGate').style.display = 'none';
+            document.getElementById('inputSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
 
-            // Build the final URL
-            const baseUrl = window.location.origin + window.location.pathname.replace('create.html', '');
-            const fullLink = `${baseUrl}${targetFile}?n=${encodeURIComponent(name)}`;
+            // --- DEEP PATH LOGIC ---
+            const currentPath = window.location.pathname;
+            const directory = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            
+            // Ensure we are looking inside the 'cards' folder
+            // This builds: domain.com/cards/valentine/impossibleno.html
+            const fullLink = `${window.location.origin}${directory}/cards/${targetFile}?n=${encodeURIComponent(name)}`;
             
             document.getElementById('finalLink').value = fullLink;
+            document.getElementById('previewLink').href = fullLink;
         }
 
         function copyLink() {
             const copyText = document.getElementById("finalLink");
             copyText.select();
-            copyText.setSelectionRange(0, 99999); 
             navigator.clipboard.writeText(copyText.value);
-            alert("Link copied! Go send it to them! 🚀");
+            alert("Link copied!");
         }
     </script>
 </body>
