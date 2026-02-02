@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Someone Special ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff0f3;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* --- Falling Elements --- */
+        .falling-element {
+            position: fixed;
+            top: -10vh;
+            user-select: none;
+            z-index: 0;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg) translateX(0); }
+            100% { transform: translateY(110vh) rotate(720deg) translateX(50px); }
+        }
+
+        /* --- Welcome Screen --- */
+        #welcomeScreen { z-index: 20; padding: 20px; }
+        .huge-text {
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            color: #ff4b6e;
+            font-weight: 900;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+        .start-btn {
+            padding: 20px 50px;
+            font-size: 1.6rem;
+            background-color: #ff4b6e;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 75, 110, 0.3);
+        }
+
+        /* --- Main Cards --- */
+        .container {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 75, 110, 0.2);
+            z-index: 10;
+            width: 85%;
+            max-width: 450px;
+        }
+        .hidden { display: none !important; }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 180px; /* Space for the growing button */
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        #yesBtn { background-color: #ff4b6e; color: white; }
+        #noBtn { background-color: #6c757d; color: white; position: relative; }
+
+        .celebration-gif {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .retry-link {
+            display: block;
+            margin-top: 25px;
+            color: #ff4b6e;
+            text-decoration: underline;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="welcomeScreen">
+        <h1 class="huge-text">Hey <span id="recipientName">Sonal</span>,<br>Come Closer To Screen,<br>I have Something to Tell You</h1>
+        <button class="start-btn" onclick="startExperience()">Click Below</button>
+    </div>
+
+    <div id="mainCard" class="container hidden">
+        <h1 style="color: #ff4b6e; font-size: 2rem;">Will you be my valentine? 🌹</h1>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="celebrate()">Yes</button>
+            <button id="noBtn" onmouseover="dodge()">No</button>
+        </div>
+    </div>
+
+    <div id="celebration" class="container hidden">
+        <h1 style="color: #ff4b6e;">Yay! Best decision ever! ❤️</h1>
+        <img src="https://media.giphy.com/media/NKmXVFgwd8HKw/giphy.gif" class="celebration-gif" alt="Celebration GIF">
+        <span class="retry-link" onclick="goBackAndTryNo()">Wait, let me try to click 'No' instead...</span>
+    </div>
+
+    <script>
+        // --- Dynamic Name Logic ---
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Sonal';
+        document.getElementById('recipientName').innerText = name;
+        document.title = `For ${name} ❤️`;
+
+        const elements = ['❤️', '💖', '✨', '🌸', '🌹', '🎉', '🎊', '💝'];
+        let yesScale = 1;
+
+        function createFallingElement() {
+            const el = document.createElement('div');
+            el.classList.add('falling-element');
+            el.innerHTML = elements[Math.floor(Math.random() * elements.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        // Constant rain of hearts and confetti
+        setInterval(createFallingElement, 120);
+
+        function startExperience() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('mainCard').classList.remove('hidden');
+        }
+
+        function dodge() {
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+
+            noBtn.style.position = 'fixed';
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+
+            noBtn.style.left = Math.random() * maxX + 'px';
+            noBtn.style.top = Math.random() * maxY + 'px';
+
+            yesScale += 0.25; // Grow Yes button each time No is dodged
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
+
+        function celebrate() {
+            document.getElementById('mainCard').classList.add('hidden');
+            document.getElementById('celebration').classList.remove('hidden');
+            document.getElementById('noBtn').style.display = 'none';
+            document.body.style.backgroundColor = '#ffccd5';
+
+            // Extra burst of celebration
+            for(let i=0; i<40; i++) {
+                setTimeout(createFallingElement, i * 80);
+            }
+        }
+
+        function goBackAndTryNo() {
+            document.getElementById('celebration').classList.add('hidden');
+            document.getElementById('mainCard').classList.remove('hidden');
+
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.display = 'inline-block';
+            noBtn.style.position = 'relative'; // Reset position so she sees it
+            noBtn.style.left = '0';
+            noBtn.style.top = '0';
+
+            document.body.style.backgroundColor = '#fff0f3';
+            // Note: yesScale remains huge so it's extra funny!
+        }
+    </script>
+</body>
+</html>
