@@ -3,16 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Magic Card</title>
+    <title>Create Your Magic Card | MagicCards</title>
     <style>
-        :root { --primary: #ff4b6e; --bg: #fff0f3; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .builder-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 15px 35px rgba(255, 75, 110, 0.15); width: 90%; max-width: 450px; text-align: center; }
-        h2 { color: var(--primary); margin-bottom: 30px; }
-        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #eee; border-radius: 12px; font-size: 1rem; box-sizing: border-box; outline: none; }
-        .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; }
-        .result-box { background: #fdf2f4; padding: 20px; border-radius: 15px; margin-top: 20px; border: 2px dashed var(--primary); }
+        :root { --primary: #ff4b6e; --bg: #fff0f3; --success: #2ecc71; --whatsapp: #25D366; }
+        
+        body { 
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg); display: flex; 
+            justify-content: center; align-items: center; height: 100vh; 
+        }
+
+        .builder-container {
+            background: white; padding: 40px; border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 75, 110, 0.15);
+            width: 90%; max-width: 450px; text-align: center;
+        }
+
+        h2 { color: var(--primary); margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 25px; font-size: 0.95rem; }
+        
+        input {
+            width: 100%; padding: 15px; margin-bottom: 20px;
+            border: 2px solid #eee; border-radius: 12px;
+            font-size: 1rem; box-sizing: border-box; outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .btn {
+            border: none; padding: 15px 30px; border-radius: 12px; 
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; 
+            width: 100%; transition: 0.3s; margin-bottom: 10px;
+            color: white;
+        }
+        .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: #ff335c; transform: translateY(-2px); }
+        
+        .btn-whatsapp { background: var(--whatsapp); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-whatsapp:hover { background: #128c7e; }
+
+        .btn-copy { background: var(--success); }
+
+        .result-box {
+            background: #fdf2f4; padding: 20px; border-radius: 15px;
+            margin-top: 10px; border: 2px dashed var(--primary);
+        }
+
         .hidden { display: none !important; }
+
+        /* Small Preview Link */
+        #previewLink { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -20,50 +60,77 @@
     <div class="builder-container">
         <div id="inputSection">
             <h2>Personalize It ✨</h2>
-            <input type="text" id="recipientName" placeholder="Enter Name (e.g. Yavya)">
-            <button class="btn" onclick="generateNow()">Generate Magic Link</button>
+            <p>Type the name of the person you want to surprise!</p>
+            <input type="text" id="recipientName" placeholder="Enter Name (e.g. Sonal)" autofocus>
+            <button class="btn btn-primary" onclick="generateLink()">Generate Magic Link</button>
         </div>
 
         <div id="resultSection" class="hidden">
             <h2>It's Ready! ❤️</h2>
+            <p>Your magic link is generated. Share it now!</p>
+            
             <div class="result-box">
-                <input type="text" id="finalLink" readonly style="width:100%; margin-bottom:10px; border:1px solid #ddd; padding:10px; border-radius:8px;">
-                <button class="btn" style="background:#2ecc71;" onclick="copyLink()">Copy Link</button>
+                <input type="text" id="finalUrlDisplay" readonly style="background: white; border: 1px solid #ddd; margin-bottom: 10px;">
+                
+                <button class="btn btn-copy" onclick="copyToClipboard()">📋 Copy Link</button>
+                
+                <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
+                    <svg style="width:20px; fill:white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.481 5.229 3.481 8.406c0 6.555-5.332 11.887-11.888 11.887-2.01 0-3.987-.506-5.741-1.464l-6.143 1.688zm6.033-4.035c1.564.933 3.523 1.423 5.535 1.423 5.835 0 10.581-4.746 10.581-10.581 0-2.822-1.1-5.474-3.097-7.471-1.997-1.998-4.649-3.098-7.472-3.098-5.835 0-10.581 4.746-10.581 10.581 0 2.083.541 4.111 1.565 5.88l-1.026 3.744 3.845-1.057zm12.512-8.312c-.041-.067-.15-.108-.315-.191-.166-.083-.981-.484-1.133-.538-.151-.054-.262-.083-.373.084-.111.166-.43.538-.527.65-.097.112-.194.125-.359.041-.166-.083-.7-.258-1.334-.824-.495-.441-.828-.985-.925-1.15-.097-.166-.01-.256.072-.339.074-.075.166-.191.249-.286.083-.095.111-.162.166-.27.055-.109.027-.204-.013-.287-.041-.084-.373-.9-.511-1.233-.134-.326-.27-.282-.373-.287-.096-.005-.207-.006-.318-.006-.111 0-.292.042-.444.208-.153.166-.583.57-.583 1.391 0 .822.597 1.618.681 1.729.083.111 1.176 1.795 2.848 2.517.398.172.708.274.95.351.4.127.763.109 1.05.066.32-.048.981-.401 1.119-.788.138-.387.138-.718.097-.788z"/></svg>
+                    Send on WhatsApp
+                </button>
             </div>
-            <p><a href="" id="previewLink" target="_blank" style="color:var(--primary); font-size:0.9rem;">Test Preview</a></p>
+            
+            <p style="margin-top:20px;">
+                <a href="#" id="testLink" target="_blank">👁️ Click here to test it yourself</a>
+            </p>
+            
+            <button class="btn btn-primary" onclick="location.reload()" style="background:#6c757d; font-size: 0.9rem; margin-top:20px;">
+                Create Another Card
+            </button>
         </div>
     </div>
 
     <script>
-        // 1. Get the file info from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        // This will now expect something like "valentine/impossibleno.html" from your sheet
-        let targetFile = urlParams.get('file') || 'valentine/impossibleno.html';
+        // 1. Get the card path from the URL (e.g., valentine/impossibleno.html)
+        const params = new URLSearchParams(window.location.search);
+        const fileNameFromSheet = params.get('file') || 'valentine/impossibleno.html';
 
-        function generateNow() {
-            const name = document.getElementById('recipientName').value;
-            if(!name) return alert("Please enter a name!");
+        function generateLink() {
+            const name = document.getElementById('recipientName').value.trim();
+            if (!name) {
+                alert("Please enter a name first!");
+                return;
+            }
 
+            // Hide Input, Show Result
             document.getElementById('inputSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
 
-            // --- DEEP PATH LOGIC ---
-            const currentPath = window.location.pathname;
-            const directory = currentPath.substring(0, currentPath.lastIndexOf('/'));
-            
-            // Ensure we are looking inside the 'cards' folder
-            // This builds: domain.com/cards/valentine/impossibleno.html
-            const fullLink = `${window.location.origin}${directory}/cards/${targetFile}?n=${encodeURIComponent(name)}`;
-            
-            document.getElementById('finalLink').value = fullLink;
-            document.getElementById('previewLink').href = fullLink;
+            // 2. Build the Final Viral URL
+            // This detects the directory automatically (works on PC and GitHub)
+            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            // This version is smarter about finding your folders
+            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const cleanFilePath = fileNameFromSheet.startsWith('cards/') ? fileNameFromSheet : `cards/${fileNameFromSheet}`;
+            const finalLink = `${window.location.origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
+
+            // 3. Update UI
+            document.getElementById('finalUrlDisplay').value = finalLink;
+            document.getElementById('testLink').href = finalLink;
         }
 
-        function copyLink() {
-            const copyText = document.getElementById("finalLink");
+        function copyToClipboard() {
+            const copyText = document.getElementById("finalUrlDisplay");
             copyText.select();
+            copyText.setSelectionRange(0, 99999); // Mobile support
             navigator.clipboard.writeText(copyText.value);
-            alert("Link copied!");
+            alert("Link copied! Now paste it in your chat. 🚀");
+        }
+
+        function shareToWhatsApp() {
+            const url = document.getElementById('finalUrlDisplay').value;
+            const message = encodeURIComponent("Hey! I made a special surprise for you. Open this: " + url);
+            window.open(`https://wa.me/?text=${message}`, '_blank');
         }
     </script>
 </body>
