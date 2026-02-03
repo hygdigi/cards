@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Postcard 🧳</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #c7f9cc, #fefae0);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+        .stamp {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        button {
+            border: none;
+            background: #38b000;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .message { margin-top: 12px; font-weight: 600; }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #38b000; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="stamp">📮</div>
+        <h1>Postcard for <span id="name">Traveler</span></h1>
+        <p>Tap to reveal your next travel vibe.</p>
+        <button onclick="reveal()">Reveal vibe</button>
+        <div class="message" id="message"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Traveler';
+        document.getElementById('name').textContent = name;
+        const vibes = ['Beach sunrise 🌅', 'Mountain escape 🏔️', 'City lights 🌃', 'Desert calm 🌵'];
+
+        function reveal() {
+            const line = vibes[Math.floor(Math.random() * vibes.length)];
+            document.getElementById('message').textContent = line;
+        }
+    </script>
+</body>
+</html>

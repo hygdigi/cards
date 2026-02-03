@@ -168,9 +168,7 @@
         <span style="color: var(--muted); font-size: 0.85rem;">Make it fun. Make it viral.</span>
         <input type="text" class="search-box" id="searchInput" placeholder="Search cards..." onkeyup="handleSearch()">
         
-        <div id="menu-container">
-            <div class="menu-item active" onclick="filterCards('all', this)">🏠 All Cards</div>
-            </div>
+        <div id="menu-container"></div>
     </nav>
 
     <main id="main-content">
@@ -234,7 +232,27 @@
             { title: 'Gratitude Jar', category: 'Gratitude', emoji: '🙏', fileName: 'gratitude/thanks.html' },
             { title: 'Friendly Roast', category: 'Roast', emoji: '🔥', fileName: 'roast/mildroast.html' },
             { title: 'Lucky Charm', category: 'Good Luck', emoji: '🍀', fileName: 'goodluck/lucky.html' },
-            { title: 'Secret Confession', category: 'Confession', emoji: '💌', fileName: 'confession/secret.html' }
+            { title: 'Secret Confession', category: 'Confession', emoji: '💌', fileName: 'confession/secret.html' },
+            { title: 'Pun Generator', category: 'Jokes', emoji: '😂', fileName: 'jokes/pun.html' },
+            { title: 'Fireworks Night', category: 'Celebration', emoji: '🎆', fileName: 'celebration/fireworks.html' },
+            { title: 'Heartbeat Crush', category: 'Crush', emoji: '💓', fileName: 'crush/heartbeat.html' },
+            { title: 'Focus Sprint', category: 'Study', emoji: '📚', fileName: 'study/focus.html' },
+            { title: 'Travel Postcard', category: 'Travel', emoji: '🧳', fileName: 'travel/postcard.html' },
+            { title: 'Level Up', category: 'Gaming', emoji: '🎮', fileName: 'gaming/levelup.html' },
+            { title: 'Goal Cheer', category: 'Sports', emoji: '⚽', fileName: 'sports/goal.html' },
+            { title: 'Snack Picker', category: 'Food', emoji: '🍿', fileName: 'food/snack.html' },
+            { title: 'Diwali Lights', category: 'Festival', emoji: '🪔', fileName: 'festival/diwali.html' },
+            { title: 'Spooky Surprise', category: 'Halloween', emoji: '🎃', fileName: 'halloween/spooky.html' },
+            { title: 'New Year Countdown', category: 'New Year', emoji: '🎊', fileName: 'newyear/countdown.html' },
+            { title: 'Graduation Cap Toss', category: 'Graduation', emoji: '🎓', fileName: 'graduation/gradcap.html' },
+            { title: 'Warm Welcome', category: 'Welcome', emoji: '👋', fileName: 'welcome/hello.html' },
+            { title: 'Miss You Echo', category: 'Miss You', emoji: '💌', fileName: 'missyou/echo.html' },
+            { title: 'Big Congrats', category: 'Congrats', emoji: '🏆', fileName: 'congrats/trophy.html' },
+            { title: 'Pep Talk', category: 'Encouragement', emoji: '🌟', fileName: 'encouragement/pep.html' },
+            { title: 'Paw Promise', category: 'Pets', emoji: '🐾', fileName: 'pet/paw.html' },
+            { title: 'Playlist Mood', category: 'Music', emoji: '🎵', fileName: 'music/playlist.html' },
+            { title: 'Movie Night', category: 'Movie', emoji: '🎬', fileName: 'movie/ticket.html' },
+            { title: 'Break Reminder', category: 'Work', emoji: '☕', fileName: 'work/break.html' }
         ];
 
         let allCardsData = [];
@@ -271,11 +289,11 @@
             }
 
             buildDynamicMenu();
-            renderCards(allCardsData);
         }
 
         function buildDynamicMenu() {
             const container = document.getElementById('menu-container');
+            container.innerHTML = '';
             const cats = [...new Set(allCardsData.map(c => c.category))];
             cats.forEach(cat => {
                 if(!cat) return;
@@ -285,6 +303,12 @@
                 div.onclick = () => filterCards(cat, div);
                 container.appendChild(div);
             });
+            if (cats.length) {
+                container.firstChild.classList.add('active');
+                const firstCategory = cats[0];
+                const filtered = allCardsData.filter(c => c.category === firstCategory);
+                renderCards(filtered);
+            }
         }
 
         function renderCards(cards) {
@@ -326,7 +350,7 @@
         function filterCards(cat, el) {
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            const filtered = cat === 'all' ? allCardsData : allCardsData.filter(c => c.category === cat);
+            const filtered = allCardsData.filter(c => c.category === cat);
             renderCards(filtered);
         }
 

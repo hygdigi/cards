@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paw Promise 🐾</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #fef3c7;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+        .paw {
+            font-size: 3rem;
+        }
+        button {
+            border: none;
+            background: #f59e0b;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .line { margin-top: 12px; font-weight: 600; }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f59e0b; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="paw">🐾</div>
+        <h1>Furry love for <span id="name">You</span></h1>
+        <p>Tap to receive a paw promise.</p>
+        <button onclick="promise()">Paw promise</button>
+        <div class="line" id="line"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'You';
+        document.getElementById('name').textContent = name;
+        const lines = ['Always your cuddle buddy.', 'Tail wags incoming!', 'Best naps together.'];
+
+        function promise() {
+            const line = lines[Math.floor(Math.random() * lines.length)];
+            document.getElementById('line').textContent = line;
+        }
+    </script>
+</body>
+</html>

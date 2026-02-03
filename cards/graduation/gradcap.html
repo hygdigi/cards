@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Cap Toss 🎓</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #f1f5f9;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+        .cap {
+            font-size: 3rem;
+            transition: transform 0.4s ease;
+        }
+        button {
+            border: none;
+            background: #0f172a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #0f172a; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="cap" id="cap">🎓</div>
+        <h1>Congrats, <span id="name">Graduate</span>!</h1>
+        <p>Tap to toss the cap.</p>
+        <button onclick="toss()">Toss it</button>
+        <p id="line"></p>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Graduate';
+        document.getElementById('name').textContent = name;
+        let tossed = false;
+
+        function toss() {
+            const cap = document.getElementById('cap');
+            const line = document.getElementById('line');
+            tossed = !tossed;
+            cap.style.transform = tossed ? 'translateY(-20px) rotate(-10deg)' : 'translateY(0)';
+            line.textContent = tossed ? 'You did it! The world is yours. 🌟' : '';
+        }
+    </script>
+</body>
+</html>
