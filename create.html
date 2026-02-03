@@ -173,7 +173,8 @@
             // This detects the directory automatically (works on PC and GitHub)
             const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
             const cleanFilePath = fileNameFromSheet.startsWith('cards/') ? fileNameFromSheet : `cards/${fileNameFromSheet}`;
-            const finalLink = `${window.location.origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
+            const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : '';
+            const finalLink = `${origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
 
             // 3. Update UI
             document.getElementById('finalUrlDisplay').value = finalLink;

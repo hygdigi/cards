@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorry Bear 🧸</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fef6e4;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        .bear {
+            font-size: 4rem;
+        }
+        h1 { margin: 8px 0; color: #ff4b6e; }
+        p { color: #5f5f5f; }
+        button {
+            border: none;
+            background: #ff4b6e;
+            color: white;
+            padding: 10px 20px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .message { margin-top: 16px; font-weight: 600; color: #333; }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #ff4b6e; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="bear">🧸</div>
+        <h1>I'm sorry, <span id="name">Friend</span></h1>
+        <p>Tap the hug button to forgive me?</p>
+        <button onclick="forgive()">Send a hug 🤗</button>
+        <div class="message" id="message"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Friend';
+        document.getElementById('name').textContent = name;
+        const messages = [
+            'Promise: I will do better 💛',
+            'You deserve the warmest hugs.',
+            'Can we hit reset together?'
+        ];
+
+        function forgive() {
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = message;
+        }
+    </script>
+</body>
+</html>

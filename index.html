@@ -223,6 +223,20 @@
     <script>
         const sheetUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7Xp2IV6Zt4aMorOp9ivwlDIoO5bQFiFrIS4PCzEiBUeXmgK1WQj7egnZqB3skS7kUYJBE0040OAHh/pub?gid=0&single=true&output=csv');
         
+        const localCardsData = [
+            { title: 'Impossible No', category: 'Valentine', emoji: '🌹', fileName: 'valentine/impossibleno.html' },
+            { title: 'Birthday Blast', category: 'Birthday', emoji: '🎂', fileName: 'birthday/blast.html' },
+            { title: 'Friendship Meter', category: 'Friendship', emoji: '🤝', fileName: 'friendship/forever.html' },
+            { title: 'Sorry Bear', category: 'Apology', emoji: '🧸', fileName: 'apology/bear.html' },
+            { title: 'Spin the Prank', category: 'Prank', emoji: '🎡', fileName: 'prank/spin.html' },
+            { title: 'Launch Your Dream', category: 'Motivation', emoji: '🚀', fileName: 'motivation/rocket.html' },
+            { title: 'Anniversary Timeline', category: 'Anniversary', emoji: '💞', fileName: 'anniversary/timeline.html' },
+            { title: 'Gratitude Jar', category: 'Gratitude', emoji: '🙏', fileName: 'gratitude/thanks.html' },
+            { title: 'Friendly Roast', category: 'Roast', emoji: '🔥', fileName: 'roast/mildroast.html' },
+            { title: 'Lucky Charm', category: 'Good Luck', emoji: '🍀', fileName: 'goodluck/lucky.html' },
+            { title: 'Secret Confession', category: 'Confession', emoji: '💌', fileName: 'confession/secret.html' }
+        ];
+
         let allCardsData = [];
 
         async function init() {
@@ -231,7 +245,7 @@
                 const csvText = await response.text();
                 const rows = csvText.split('\n').slice(1);
                 
-                allCardsData = rows.map(row => {
+                const sheetCards = rows.map(row => {
                     const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     return {
                         title: cols[0]?.replace(/"/g, '').trim(),
@@ -241,9 +255,23 @@
                     };
                 }).filter(c => c.title);
 
-                buildDynamicMenu();
-                renderCards(allCardsData);
-            } catch (e) { console.error(e); }
+                const uniqueByFile = new Map();
+                [...sheetCards, ...localCardsData].forEach(card => {
+                    if (card.fileName) {
+                        uniqueByFile.set(card.fileName, card);
+                    }
+                });
+                allCardsData = Array.from(uniqueByFile.values());
+                if (!allCardsData.length) {
+                    allCardsData = localCardsData;
+                }
+            } catch (e) {
+                console.error(e);
+                allCardsData = localCardsData;
+            }
+
+            buildDynamicMenu();
+            renderCards(allCardsData);
         }
 
         function buildDynamicMenu() {
@@ -263,6 +291,7 @@
             const grid = document.getElementById('cardGrid');
             grid.innerHTML = cards.length ? '' : '<p>No cards found matching your search.</p>';
             cards.forEach(card => {
+                if (!card.fileName) return;
                 const item = document.createElement('div');
                 item.className = 'card-thumbnail';
                 item.onclick = () => window.location.href = `create.html?file=${card.fileName}`;
