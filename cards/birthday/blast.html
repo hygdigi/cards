@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Blast 🎂</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffe5ec, #fff4cc);
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 32px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 420px;
+        }
+        h1 { margin: 0 0 10px; color: #ff4b6e; }
+        p { margin: 0 0 20px; color: #5f5f5f; }
+        button {
+            border: none;
+            background: #ff4b6e;
+            color: white;
+            padding: 12px 22px;
+            font-weight: 700;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .confetti {
+            position: fixed;
+            top: -10vh;
+            animation: fall 2.6s linear forwards;
+        }
+        @keyframes fall {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+        .cta { margin-top: 18px; font-size: 0.9rem; }
+        .cta a { color: #ff4b6e; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Happy Birthday, <span id="name">Friend</span>! 🎉</h1>
+        <p>Tap the button to launch a birthday confetti blast!</p>
+        <button onclick="blast()">Blast Confetti</button>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Friend';
+        document.getElementById('name').textContent = name;
+
+        const colors = ['#ff4b6e', '#ffd93d', '#6c63ff', '#2ecc71', '#ff9f1c'];
+        function blast() {
+            for (let i = 0; i < 40; i += 1) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.textContent = '🎊';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.fontSize = `${12 + Math.random() * 22}px`;
+                confetti.style.animationDuration = `${2 + Math.random() * 1.5}s`;
+                confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>

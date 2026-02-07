@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Prank 🎡</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #111827;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+        }
+        .card {
+            background: #1f2937;
+            padding: 30px;
+            border-radius: 22px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        }
+        .wheel {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 10px solid #ff4b6e;
+            margin: 20px auto;
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            transition: transform 1s ease;
+        }
+        button {
+            border: none;
+            background: #ff4b6e;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f9a8d4; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Spin the Prank, <span id="name">Legend</span> 😈</h1>
+        <p>Let's see your secret prank level.</p>
+        <div class="wheel" id="wheel">🎯</div>
+        <button onclick="spin()">Spin now</button>
+        <p id="result"></p>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Legend';
+        document.getElementById('name').textContent = name;
+        const levels = ['Innocent 😇', 'Sneaky 😏', 'Chaos Mode 🔥', 'Master Prankster 👑'];
+        let spins = 0;
+
+        function spin() {
+            spins += 1;
+            const wheel = document.getElementById('wheel');
+            wheel.style.transform = `rotate(${360 * spins + Math.floor(Math.random() * 360)}deg)`;
+            const level = levels[Math.floor(Math.random() * levels.length)];
+            document.getElementById('result').textContent = `Result: ${level}`;
+        }
+    </script>
+</body>
+</html>

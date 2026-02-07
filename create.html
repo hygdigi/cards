@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Your Magic Card | MagicCards</title>
     <style>
-        :root { --primary: #ff4b6e; --bg: #fff0f3; --success: #2ecc71; --whatsapp: #25D366; }
+        :root {
+            --primary: #ff4b6e;
+            --bg: #fff0f3;
+            --success: #2ecc71;
+            --whatsapp: #25D366;
+            --muted: #6c757d;
+            --card: #ffffff;
+        }
+        * { box-sizing: border-box; }
         
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg); display: flex; 
-            justify-content: center; align-items: center; height: 100vh; 
+            justify-content: center; align-items: center; min-height: 100vh; 
         }
 
         .builder-container {
@@ -21,6 +29,8 @@
 
         h2 { color: var(--primary); margin-bottom: 10px; }
         p { color: #666; margin-bottom: 25px; font-size: 0.95rem; }
+
+        .subhead { color: var(--muted); font-size: 0.85rem; margin-top: -10px; }
         
         input {
             width: 100%; padding: 15px; margin-bottom: 20px;
@@ -53,6 +63,45 @@
 
         /* Small Preview Link */
         #previewLink { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
+
+        .progress {
+            background: #ffe1e7;
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 16px 0 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4b6e, #ff8e8e);
+            transition: width 0.4s ease;
+        }
+        .share-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .share-grid .btn {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+        .badge-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .badge {
+            background: #fff5f7;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -61,13 +110,21 @@
         <div id="inputSection">
             <h2>Personalize It ✨</h2>
             <p>Type the name of the person you want to surprise!</p>
+            <div class="badge-row">
+                <span class="badge">Fast</span>
+                <span class="badge">Zero-cost</span>
+                <span class="badge">Share-ready</span>
+            </div>
             <input type="text" id="recipientName" placeholder="Enter Name (e.g. Sonal)" autofocus>
             <button class="btn btn-primary" onclick="generateLink()">Generate Magic Link</button>
+            <p class="subhead">Tip: People share 2x more when the message feels personal.</p>
         </div>
 
         <div id="resultSection" class="hidden">
             <h2>It's Ready! ❤️</h2>
-            <p>Your magic link is generated. Share it now!</p>
+            <p>Your magic link is being prepared. Stay for the reveal!</p>
+            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            <p class="subhead" id="statusText">Packing confetti... ✨</p>
             
             <div class="result-box">
                 <input type="text" id="finalUrlDisplay" readonly style="background: white; border: 1px solid #ddd; margin-bottom: 10px;">
@@ -78,6 +135,10 @@
                     <svg style="width:20px; fill:white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.481 5.229 3.481 8.406c0 6.555-5.332 11.887-11.888 11.887-2.01 0-3.987-.506-5.741-1.464l-6.143 1.688zm6.033-4.035c1.564.933 3.523 1.423 5.535 1.423 5.835 0 10.581-4.746 10.581-10.581 0-2.822-1.1-5.474-3.097-7.471-1.997-1.998-4.649-3.098-7.472-3.098-5.835 0-10.581 4.746-10.581 10.581 0 2.083.541 4.111 1.565 5.88l-1.026 3.744 3.845-1.057zm12.512-8.312c-.041-.067-.15-.108-.315-.191-.166-.083-.981-.484-1.133-.538-.151-.054-.262-.083-.373.084-.111.166-.43.538-.527.65-.097.112-.194.125-.359.041-.166-.083-.7-.258-1.334-.824-.495-.441-.828-.985-.925-1.15-.097-.166-.01-.256.072-.339.074-.075.166-.191.249-.286.083-.095.111-.162.166-.27.055-.109.027-.204-.013-.287-.041-.084-.373-.9-.511-1.233-.134-.326-.27-.282-.373-.287-.096-.005-.207-.006-.318-.006-.111 0-.292.042-.444.208-.153.166-.583.57-.583 1.391 0 .822.597 1.618.681 1.729.083.111 1.176 1.795 2.848 2.517.398.172.708.274.95.351.4.127.763.109 1.05.066.32-.048.981-.401 1.119-.788.138-.387.138-.718.097-.788z"/></svg>
                     Send on WhatsApp
                 </button>
+                <div class="share-grid">
+                    <button class="btn btn-primary" onclick="shareToTelegram()">💬 Telegram</button>
+                    <button class="btn btn-primary" onclick="shareToTwitter()">🐦 X (Twitter)</button>
+                </div>
             </div>
             
             <p style="margin-top:20px;">
@@ -94,6 +155,8 @@
         // 1. Get the card path from the URL (e.g., valentine/impossibleno.html)
         const params = new URLSearchParams(window.location.search);
         const fileNameFromSheet = params.get('file') || 'valentine/impossibleno.html';
+        const statusText = document.getElementById('statusText');
+        const progressBar = document.getElementById('progressBar');
 
         function generateLink() {
             const name = document.getElementById('recipientName').value.trim();
@@ -109,14 +172,35 @@
             // 2. Build the Final Viral URL
             // This detects the directory automatically (works on PC and GitHub)
             const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-            // This version is smarter about finding your folders
-            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
             const cleanFilePath = fileNameFromSheet.startsWith('cards/') ? fileNameFromSheet : `cards/${fileNameFromSheet}`;
-            const finalLink = `${window.location.origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
+            const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : '';
+            const finalLink = `${origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
 
             // 3. Update UI
             document.getElementById('finalUrlDisplay').value = finalLink;
             document.getElementById('testLink').href = finalLink;
+            runAdGate();
+        }
+
+        function runAdGate() {
+            const steps = [
+                { text: 'Packing confetti... ✨', progress: 30 },
+                { text: 'Polishing the magic link... 🔗', progress: 60 },
+                { text: 'Unlocking share power... 🚀', progress: 100 }
+            ];
+            let stepIndex = 0;
+            statusText.textContent = steps[0].text;
+            progressBar.style.width = `${steps[0].progress}%`;
+            const interval = setInterval(() => {
+                stepIndex += 1;
+                if (stepIndex >= steps.length) {
+                    clearInterval(interval);
+                    statusText.textContent = 'Ready to share! 🎉';
+                    return;
+                }
+                statusText.textContent = steps[stepIndex].text;
+                progressBar.style.width = `${steps[stepIndex].progress}%`;
+            }, 700);
         }
 
         function copyToClipboard() {
@@ -129,8 +213,20 @@
 
         function shareToWhatsApp() {
             const url = document.getElementById('finalUrlDisplay').value;
-            const message = encodeURIComponent("Hey! I made a special surprise for you. Open this: " + url);
+            const message = encodeURIComponent("Hey! I made a special surprise just for you. Open this: " + url);
             window.open(`https://wa.me/?text=${message}`, '_blank');
+        }
+
+        function shareToTelegram() {
+            const url = document.getElementById('finalUrlDisplay').value;
+            const message = encodeURIComponent("I made a magic greeting for you! Tap here: " + url);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${message}`, '_blank');
+        }
+
+        function shareToTwitter() {
+            const url = document.getElementById('finalUrlDisplay').value;
+            const text = encodeURIComponent("I just made a magic greeting! 🔥");
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank');
         }
     </script>
 </body>
