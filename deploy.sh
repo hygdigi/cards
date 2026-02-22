@@ -23,7 +23,8 @@ git commit -m "✨ Full redesign — dark luxury theme, all 31 cards fixed ($TIM
 
 echo ""
 echo "✅ Committed. Now pushing..."
-git push origin main
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+git push origin $CURRENT_BRANCH
 
 echo ""
 echo "🌍 Done! Your site will be live in ~60 seconds at:"
