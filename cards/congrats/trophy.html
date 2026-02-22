@@ -118,11 +118,24 @@
 
         class SoundEffects {
             constructor() {
-                try { this.audioContext = new (window.AudioContext || window.webkitAudioContext)(); }
-                catch (e) { this.audioContext = null; }
+                this.audioContext = null;
             }
+            
+            initAudio() {
+                if (!this.audioContext) {
+                    try {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    } catch (e) {
+                        console.warn('AudioContext not supported');
+                    }
+                }
+            }
+            
             playVictory() {
-                if (!soundEnabled || !this.audioContext) return;
+                if (!soundEnabled) return;
+                this.initAudio();
+                if (!this.audioContext) return;
+                
                 const now = this.audioContext.currentTime;
                 const notes = [523.25, 659.25, 783.99, 1046.5];
                 notes.forEach((freq, i) => {

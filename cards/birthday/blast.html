@@ -133,10 +133,24 @@
 
         class SoundEffects {
             constructor() {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.audioContext = null;
             }
+            
+            initAudio() {
+                if (!this.audioContext) {
+                    try {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    } catch (e) {
+                        console.warn('AudioContext not supported');
+                    }
+                }
+            }
+            
             playChime() {
                 if (!soundEnabled) return;
+                this.initAudio();
+                if (!this.audioContext) return;
+                
                 const now = this.audioContext.currentTime;
                 const osc = this.audioContext.createOscillator();
                 const gain = this.audioContext.createGain();
@@ -151,6 +165,9 @@
             }
             playCelebration() {
                 if (!soundEnabled) return;
+                this.initAudio();
+                if (!this.audioContext) return;
+                
                 const now = this.audioContext.currentTime;
                 const notes = [600, 800, 1000, 1200];
                 notes.forEach((freq, i) => {
