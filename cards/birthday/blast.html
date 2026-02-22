@@ -140,8 +140,12 @@
                 if (!this.audioContext) {
                     try {
                         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        if (this.audioContext.state === 'suspended') {
+                            this.audioContext.resume().then(() => console.log('Audio resumed'));
+                        }
+                        console.log('AudioContext initialized');
                     } catch (e) {
-                        console.warn('AudioContext not supported');
+                        console.warn('AudioContext not supported', e);
                     }
                 }
             }
@@ -149,38 +153,51 @@
             playChime() {
                 if (!soundEnabled) return;
                 this.initAudio();
-                if (!this.audioContext) return;
+                if (!this.audioContext) { console.log('No audio context'); return; }
                 
-                const now = this.audioContext.currentTime;
-                const osc = this.audioContext.createOscillator();
-                const gain = this.audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(this.audioContext.destination);
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0, now + 0.1);
-                osc.start(now);
-                osc.stop(now + 0.1);
+                try {
+                    const now = this.audioContext.currentTime;
+                    const osc = this.audioContext.createOscillator();
+                    const gain = this.audioContext.createGain();
+                    osc.type = 'sine';
+                    osc.connect(gain);
+                    gain.connect(this.audioContext.destination);
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+                    gain.gain.setValueAtTime(0.5, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                    console.log('Chime played');
+                } catch (e) {
+                    console.error('Error playing chime:', e);
+                }
             }
+            
             playCelebration() {
                 if (!soundEnabled) return;
                 this.initAudio();
                 if (!this.audioContext) return;
                 
-                const now = this.audioContext.currentTime;
-                const notes = [600, 800, 1000, 1200];
-                notes.forEach((freq, i) => {
-                    const osc = this.audioContext.createOscillator();
-                    const gain = this.audioContext.createGain();
-                    osc.connect(gain);
-                    gain.connect(this.audioContext.destination);
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.2, now + i * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0, now + i * 0.1 + 0.2);
-                    osc.start(now + i * 0.1);
-                    osc.stop(now + i * 0.1 + 0.2);
-                });
+                try {
+                    const now = this.audioContext.currentTime;
+                    const notes = [600, 800, 1000, 1200];
+                    notes.forEach((freq, i) => {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.4, now + i * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
+                        osc.start(now + i * 0.12);
+                        osc.stop(now + i * 0.12 + 0.25);
+                    });
+                    console.log('Celebration played');
+                } catch (e) {
+                    console.error('Error playing celebration:', e);
+                }
             }
         }
 

@@ -125,8 +125,12 @@
                 if (!this.audioContext) {
                     try {
                         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        if (this.audioContext.state === 'suspended') {
+                            this.audioContext.resume().then(() => console.log('Audio resumed'));
+                        }
+                        console.log('AudioContext initialized');
                     } catch (e) {
-                        console.warn('AudioContext not supported');
+                        console.warn('AudioContext not supported', e);
                     }
                 }
             }
@@ -136,19 +140,25 @@
                 this.initAudio();
                 if (!this.audioContext) return;
                 
-                const now = this.audioContext.currentTime;
-                const notes = [523.25, 659.25, 783.99, 1046.5];
-                notes.forEach((freq, i) => {
-                    const osc = this.audioContext.createOscillator();
-                    const gain = this.audioContext.createGain();
-                    osc.connect(gain);
-                    gain.connect(this.audioContext.destination);
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.25, now + i * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0, now + i * 0.1 + 0.2);
-                    osc.start(now + i * 0.1);
-                    osc.stop(now + i * 0.1 + 0.2);
-                });
+                try {
+                    const now = this.audioContext.currentTime;
+                    const notes = [523.25, 659.25, 783.99, 1046.5];
+                    notes.forEach((freq, i) => {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.45, now + i * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
+                        osc.start(now + i * 0.12);
+                        osc.stop(now + i * 0.12 + 0.25);
+                    });
+                    console.log('Victory sound played');
+                } catch (e) {
+                    console.error('Error playing victory sound:', e);
+                }
             }
         }
 
