@@ -3,73 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Big Congrats 🏆 — Epic Achievement</title>
+    <title>🏆 Awesome Achievement! | Congratulations Quest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
             background-attachment: fixed;
             font-family: 'Fredoka', sans-serif;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
             overflow: hidden;
             position: relative;
         }
-        #starsCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        
+        #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        
         .card {
             position: relative;
             z-index: 10;
             background: white;
             border-radius: 40px;
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(255, 165, 0, 0.3);
-            animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 40px 120px rgba(0,0,0,0.3);
+            animation: slideUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
-        .card-header {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
-            padding: 50px 30px 30px;
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            padding: 50px 30px;
             text-align: center;
             color: white;
         }
-        .trophy-emoji { font-size: 4rem; animation: bounce 1.5s infinite; display: inline-block; }
-        @keyframes bounce { 0%, 100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.15) translateY(-20px); } }
-        .card-title { font-family: 'Poppins', serif; font-size: 2.2rem; font-weight: 800; margin: 15px 0; letter-spacing: -0.5px; }
-        .card-subtitle { font-size: 1rem; opacity: 0.95; max-width: 80%; margin: 0 auto; }
-        .card-body { padding: 45px 30px; text-align: center; }
-        .achievement-text { font-size: 1.05rem; color: #333; margin-bottom: 30px; line-height: 1.8; }
-        .btn-celebrate {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: white;
-            border: none;
-            padding: 16px 40px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 50px;
+        
+        .emoji { font-size: 4.5rem; margin-bottom: 15px; animation: spin 3s linear infinite; }
+        @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        
+        .title { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 800; margin-bottom: 5px; }
+        .subtitle { font-size: 1rem; opacity: 0.95; }
+        
+        .body {
+            padding: 40px;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .step-title { font-size: 1.5rem; font-weight: 700; color: #FF6347; margin-bottom: 15px; }
+        .step-desc { font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.6; }
+        
+        .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        
+        .choice-btn {
+            padding: 20px 15px;
+            border-radius: 16px;
+            border: 2px solid #FFE5B4;
+            background: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.3);
-            margin-bottom: 25px;
             font-family: 'Fredoka', sans-serif;
-            display: inline-flex;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             align-items: center;
-            gap: 10px;
         }
-        .btn-celebrate:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255, 165, 0, 0.4); }
-        .btn-celebrate:active { transform: scale(0.95); }
-        .cheer-message { min-height: 40px; font-size: 1rem; color: #FFD700; font-weight: 700; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
-        .footer { padding: 18px 30px; border-top: 1px solid #f0f0f0; font-size: 0.85rem; color: #999; text-align: center; }
-        .footer a { color: #FFA500; text-decoration: none; font-weight: 600; }
+        
+        .choice-emoji { font-size: 1.8rem; }
+        
+        .choice-btn:hover {
+            border-color: #FFD700;
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+        
+        .choice-btn.selected {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .achievement-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.15));
+            border-radius: 25px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 3px solid #FFD700;
+            text-align: center;
+        }
+        
+        .achievement-title { font-size: 1.3rem; font-weight: 700; color: #FF6347; margin-bottom: 10px; }
+        .achievement-emoji { font-size: 3.5rem; margin: 15px 0; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
+        .achievement-text { font-size: 1rem; color: #333; line-height: 1.8; margin-top: 15px; }
+        
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #FFE5B4;
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.active {
+            background: #FFD700;
+            transform: scale(1.4);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+        
+        .btn {
+            padding: 16px 30px;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4);
+        }
+        
+        .btn-primary:hover { transform: translateY(-3px); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .difficulty-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .difficulty-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FF6347);
+            transition: width 0.3s;
+        }
+        
         .sound-toggle {
             position: fixed;
             top: 20px;
@@ -83,39 +185,108 @@
             cursor: pointer;
             font-size: 1.5rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
         }
-        .sound-toggle:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
-    <canvas id="starsCanvas"></canvas>
+    <canvas id="canvas"></canvas>
     <button class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊</button>
+    
     <div class="card">
-        <div class="card-header">
-            <div class="trophy-emoji">🏆</div>
-            <h1 class="card-title">Congratulations!</h1>
-            <p class="card-subtitle"><span id="name">Champion</span>, you absolutely crushed it! 🌟</p>
+        <div class="header">
+            <div class="emoji">🏆</div>
+            <h1 class="title">HUGE ACHIEVEMENT!</h1>
+            <p class="subtitle">Let's celebrate your epic win 🎉</p>
         </div>
-        <div class="card-body">
-            <p class="achievement-text">You did it. You overcame obstacles, pushed through challenges, and reached your goal. That's LEGENDARY. 💪</p>
-            <button class="btn-celebrate" onclick="celebrate()">🎉 CELEBRATE!</button>
-            <div class="cheer-message" id="cheerMessage"></div>
-        </div>
-        <div class="footer">
-            Made with 🎊 by MagicCards | <a href="../../create.html">Create yours →</a>
+        
+        <div class="body">
+            <!-- STEP 1: Achievement Type -->
+            <div class="section active" id="step1">
+                <div class="progress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                <p class="step-title">⭐ What did you accomplish?</p>
+                <p class="step-desc">Choose your achievement:</p>
+                <div class="choices">
+                    <button class="choice-btn" onclick="selectAchievement('promotion')">
+                        <span class="choice-emoji">💼</span>
+                        <span>Got Promoted!</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectAchievement('grad')">
+                        <span class="choice-emoji">🎓</span>
+                        <span>Graduated!</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectAchievement('project')">
+                        <span class="choice-emoji">✅</span>
+                        <span>Project Done!</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectAchievement('personal')">
+                        <span class="choice-emoji">🏃</span>
+                        <span>Personal Goal!</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- STEP 2: Difficulty Level -->
+            <div class="section" id="step2">
+                <div class="progress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                <p class="step-title">⚡ How hard was it?</p>
+                <p class="step-desc">Pick your challenge level:</p>
+                <div class="choices">
+                    <button class="choice-btn" onclick="selectDifficulty('easy')">
+                        <span class="choice-emoji">🌱</span>
+                        <span>Pretty Easy</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectDifficulty('medium')">
+                        <span class="choice-emoji">🔥</span>
+                        <span>Challenging</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectDifficulty('hard')">
+                        <span class="choice-emoji">💎</span>
+                        <span>INSANE!</span>
+                    </button>
+                    <button class="choice-btn" onclick="selectDifficulty('legendary')">
+                        <span class="choice-emoji">👑</span>
+                        <span>LEGENDARY</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- STEP 3: Result & Celebration -->
+            <div class="section" id="step3">
+                <div class="progress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot active"></div>
+                </div>
+                <div id="achievementBox" class="achievement-box">
+                    <div class="achievement-title" id="achieveTitle">🌟 Achievement Unlocked!</div>
+                    <div class="achievement-emoji" id="achieveEmoji">✨</div>
+                    <div class="achievement-text" id="achieveText">Loading celebration...</div>
+                    <div class="difficulty-bar">
+                        <div class="difficulty-fill" id="difficultyFill"></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="location.reload()">🔄 Celebrate Another!</button>
+            </div>
         </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const name = params.get('n') || 'Champion';
-        document.getElementById('name').textContent = name;
-        document.title = `Congrats to ${name}! 🏆`;
-
+        const name = params.get('n') || 'Legend';
+        
         let soundEnabled = true;
-        let celebrationCount = 0;
-
+        let currentStep = 1;
+        let selectedAchievement = null;
+        let selectedDifficulty = null;
+        
         class SoundEffects {
             constructor() {
                 this.audioContext = null;
@@ -126,20 +297,15 @@
                     try {
                         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                         if (this.audioContext.state === 'suspended') {
-                            this.audioContext.resume().then(() => console.log('Audio resumed'));
+                            this.audioContext.resume();
                         }
-                        console.log('AudioContext initialized');
-                    } catch (e) {
-                        console.warn('AudioContext not supported', e);
-                    }
+                    } catch (e) {}
                 }
             }
             
             playVictory() {
-                if (!soundEnabled) return;
+                if (!soundEnabled || !this.audioContext) return;
                 this.initAudio();
-                if (!this.audioContext) return;
-                
                 try {
                     const now = this.audioContext.currentTime;
                     const notes = [523.25, 659.25, 783.99, 1046.5];
@@ -150,106 +316,161 @@
                         osc.connect(gain);
                         gain.connect(this.audioContext.destination);
                         osc.frequency.value = freq;
-                        gain.gain.setValueAtTime(0.45, now + i * 0.12);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
-                        osc.start(now + i * 0.12);
-                        osc.stop(now + i * 0.12 + 0.25);
+                        gain.gain.setValueAtTime(0.3, now + i * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.1);
+                        osc.start(now + i * 0.1);
+                        osc.stop(now + i * 0.1 + 0.1);
                     });
-                    console.log('Victory sound played');
-                } catch (e) {
-                    console.error('Error playing victory sound:', e);
-                }
+                } catch (e) {}
+            }
+            
+            playEpic() {
+                if (!soundEnabled || !this.audioContext) return;
+                this.initAudio();
+                try {
+                    const now = this.audioContext.currentTime;
+                    for (let i = 0; i < 5; i++) {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(800 + i * 100, now + i * 0.08);
+                        osc.frequency.exponentialRampToValueAtTime(1500, now + i * 0.08 + 0.15);
+                        gain.gain.setValueAtTime(0.35, now + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.15);
+                        osc.start(now + i * 0.08);
+                        osc.stop(now + i * 0.08 + 0.15);
+                    }
+                } catch (e) {}
             }
         }
-
+        
         const sound = new SoundEffects();
-
+        
         function toggleSound() {
             soundEnabled = !soundEnabled;
             document.getElementById('soundToggle').textContent = soundEnabled ? '🔊' : '🔇';
         }
-
-        // Canvas stars & sparkles
-        const canvas = document.getElementById('starsCanvas');
+        
+        function selectAchievement(ach) {
+            selectedAchievement = ach;
+            document.querySelectorAll('#step1 .choice-btn').forEach(b => b.classList.remove('selected'));
+            event.target.closest('.choice-btn').classList.add('selected');
+            sound.playVictory();
+        }
+        
+        function selectDifficulty(diff) {
+            selectedDifficulty = diff;
+            document.querySelectorAll('#step2 .choice-btn').forEach(b => b.classList.remove('selected'));
+            event.target.closest('.choice-btn').classList.add('selected');
+            sound.playVictory();
+        }
+        
+        function nextStep() {
+            if (currentStep === 1 && !selectedAchievement) return;
+            if (currentStep === 2 && !selectedDifficulty) {
+                generateAchievement();
+                return;
+            }
+            currentStep++;
+            showStep(currentStep);
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            
+            if (currentStep === 3) {
+                sound.playEpic();
+                spawnSparkles(50);
+            }
+        }
+        
+        function generateAchievement() {
+            const achievements = {
+                promotion: { emoji: '💼', title: 'PROMOTED!', base: 'New title, new opportunities, same amazing you! 🚀' },
+                grad: { emoji: '🎓', title: 'GRADUATED!', base: 'You did it! The world is ready for you! 📚' },
+                project: { emoji: '✅', title: 'PROJECT COMPLETE!', base: 'From concept to completion - pure excellence! 💯' },
+                personal: { emoji: '🏃', title: 'GOAL ACHIEVED!', base: 'You set it. You crushed it. YOU\'RE UNSTOPPABLE! ⚡' }
+            };
+            
+            const difficulties = {
+                easy: '%20A smooth victory!',
+                medium: '%20You pushed yourself!',
+                hard: '%20Against ALL odds!',
+                legendary: '%20THIS IS HISTORIC!'
+            };
+            
+            const ach = achievements[selectedAchievement];
+            const result = ach.base + difficulties[selectedDifficulty];
+            
+            document.getElementById('achieveEmoji').textContent = ach.emoji;
+            document.getElementById('achieveTitle').textContent = ach.title;
+            document.getElementById('achieveText').textContent = result;
+            
+            const diffLevels = { easy: 25, medium: 50, hard: 75, legendary: 100 };
+            document.getElementById('difficultyFill').style.width = diffLevels[selectedDifficulty] + '%';
+        }
+        
+        // Sparkles
+        const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const sparkles = [];
-
-        function spawnSparkle() {
-            sparkles.push({
-                x: Math.random() * canvas.width,
-                y: -20,
-                vx: (Math.random() - 0.5) * 2,
-                vy: Math.random() * 1.5 + 0.8,
-                size: Math.random() * 12 + 4,
-                life: 1,
-                rotation: Math.random() * Math.PI * 2,
-                emoji: Math.random() > 0.5 ? '⭐' : '✨'
-            });
+        const particles = [];
+        
+        function spawnSparkles(count) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: -20,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: Math.random() * 4 + 2,
+                    size: Math.random() * 8 + 4,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 20,
+                    life: 1
+                });
+            }
         }
-
-        function drawSparkles() {
+        
+        function animateSparkles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = sparkles.length - 1; i >= 0; i--) {
-                const s = sparkles[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                s.vy += 0.05;
-                s.life -= 0.005;
-                s.rotation += 0.05;
-
-                if (s.y > canvas.height || s.life <= 0) {
-                    sparkles.splice(i, 1);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.08;
+                p.rotation += p.rotSpeed;
+                p.life -= 0.005;
+                
+                if (p.y > canvas.height || p.life <= 0) {
+                    particles.splice(i, 1);
                     continue;
                 }
-
+                
                 ctx.save();
-                ctx.globalAlpha = s.life * 0.7;
-                ctx.translate(s.x, s.y);
-                ctx.rotate(s.rotation);
-                ctx.font = `${s.size * 1.5}px serif`;
-                ctx.fillText(s.emoji, 0, 0);
+                ctx.globalAlpha = p.life;
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = '#FFD700';
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
                 ctx.restore();
             }
-            requestAnimationFrame(drawSparkles);
-        }
-
-        drawSparkles();
-
-        function celebrate() {
-            celebrationCount++;
-
-            // Create sparkles
-            for (let i = 0; i < 30; i++) {
-                setTimeout(spawnSparkle, i * 20);
+            
+            if (particles.length > 0) {
+                requestAnimationFrame(animateSparkles);
             }
-
-            // Play sound
-            sound.playVictory();
-
-            // Show messages
-            const messages = [
-                `🏆 You're a LEGEND, ${name}!`,
-                `🌟 Your dedication paid off!`,
-                `💪 You're unstoppable!`,
-                `🥇 Award the trophy already!`,
-                `✨ This is just the beginning!`
-            ];
-
-            const msg = messages[celebrationCount % messages.length];
-            const msgEl = document.getElementById('cheerMessage');
-            msgEl.textContent = msg;
-            setTimeout(() => { msgEl.textContent = ''; }, 2500);
         }
-
+        
+        animateSparkles();
+        
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-
-        // Auto-play a little celebration on load
-        setTimeout(() => sound.playVictory(), 1000);
     </script>
 </body>
 </html>
