@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anniversary Timeline 💞</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(120deg, #fff0f3, #e0f7fa);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+        h1 { color: #ff4b6e; margin-bottom: 6px; }
+        .timeline {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .moment {
+            background: #fff7f9;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-left: 4px solid #ff4b6e;
+        }
+        button {
+            border: none;
+            background: #ff4b6e;
+            color: white;
+            padding: 10px 18px;
+            font-weight: 700;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #ff4b6e; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Happy Anniversary, <span id="name">Love</span> 💞</h1>
+        <p>Tap to reveal our timeline highlights.</p>
+        <button onclick="reveal()">Reveal memories</button>
+        <div class="timeline" id="timeline"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Love';
+        document.getElementById('name').textContent = name;
+        const moments = [
+            'The day we first met ✨',
+            'Our first laugh together 😄',
+            'The day we chose each other 💍',
+            'Every small moment since 💖'
+        ];
+        let revealed = false;
+
+        function reveal() {
+            const timeline = document.getElementById('timeline');
+            if (revealed) {
+                timeline.innerHTML = '';
+                revealed = false;
+                return;
+            }
+            timeline.innerHTML = moments.map(m => `<div class="moment">${m}</div>`).join('');
+            revealed = true;
+        }
+    </script>
+</body>
+</html>

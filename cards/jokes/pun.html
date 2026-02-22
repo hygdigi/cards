@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pun Generator 😂</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #fff7ed;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+        h1 { color: #f97316; margin-bottom: 6px; }
+        button {
+            border: none;
+            background: #f97316;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .pun { margin-top: 12px; font-weight: 600; }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f97316; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Hey <span id="name">Friend</span> 😂</h1>
+        <p>Tap for a pun that is so bad it is good.</p>
+        <button onclick="dropPun()">Give me a pun</button>
+        <div class="pun" id="pun"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Friend';
+        document.getElementById('name').textContent = name;
+        const puns = [
+            'You are soda-licious.',
+            'You are un-bee-lievable. 🐝',
+            'I am nacho average friend.',
+            'You are paw-some! 🐾'
+        ];
+
+        function dropPun() {
+            const line = puns[Math.floor(Math.random() * puns.length)];
+            document.getElementById('pun').textContent = line;
+        }
+    </script>
+</body>
+</html>

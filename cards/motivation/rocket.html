@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Your Dream 🚀</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at top, #1f2937, #0f172a);
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        .card {
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        .rocket {
+            font-size: 3.5rem;
+            transition: transform 0.8s ease;
+        }
+        h1 { margin: 10px 0; }
+        button {
+            border: none;
+            background: #38bdf8;
+            color: #0f172a;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="rocket" id="rocket">🚀</div>
+        <h1><span id="name">Dreamer</span>, your goal is ready for launch!</h1>
+        <p>Tap launch to boost your confidence.</p>
+        <button onclick="launch()">Launch 🚀</button>
+        <p id="status"></p>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Dreamer';
+        document.getElementById('name').textContent = name;
+        let launched = false;
+
+        function launch() {
+            const rocket = document.getElementById('rocket');
+            const status = document.getElementById('status');
+            if (!launched) {
+                rocket.style.transform = 'translateY(-40px) scale(1.1)';
+                status.textContent = 'Lift off! Keep going, you are unstoppable. ✨';
+                launched = true;
+            } else {
+                rocket.style.transform = 'translateY(0) scale(1)';
+                status.textContent = 'Reset for another launch!';
+                launched = false;
+            }
+        }
+    </script>
+</body>
+</html>

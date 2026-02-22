@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship Meter 🤝</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(120deg, #dff6ff, #fff0f3);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 26px;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+        h1 { margin: 0 0 10px; color: #3a86ff; }
+        p { color: #5b5b5b; }
+        .meter {
+            height: 16px;
+            border-radius: 999px;
+            background: #f0f0f0;
+            overflow: hidden;
+            margin: 18px 0;
+        }
+        .meter-bar {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, #3a86ff, #ff4b6e);
+            transition: width 0.4s ease;
+        }
+        button {
+            border: none;
+            background: #3a86ff;
+            color: white;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #ff4b6e; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Friendship Meter</h1>
+        <p><span id="name">Bestie</span>, let's see how strong our bond is today.</p>
+        <div class="meter"><div class="meter-bar" id="meterBar"></div></div>
+        <p id="score">Score: 30%</p>
+        <button onclick="boost()">Boost the bond 💫</button>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Bestie';
+        document.getElementById('name').textContent = name;
+        let value = 30;
+
+        function boost() {
+            value = Math.min(100, value + 15 + Math.floor(Math.random() * 10));
+            document.getElementById('meterBar').style.width = `${value}%`;
+            document.getElementById('score').textContent = `Score: ${value}%`;
+            if (value === 100) {
+                document.getElementById('score').textContent = `Score: ${value}% (Forever friends!)`;
+            }
+        }
+    </script>
+</body>
+</html>

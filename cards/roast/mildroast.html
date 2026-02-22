@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendly Roast 🔥</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #fff7ed;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 22px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        }
+        h1 { color: #f97316; margin-bottom: 8px; }
+        button {
+            border: none;
+            background: #f97316;
+            color: white;
+            padding: 10px 18px;
+            font-weight: 700;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .roast {
+            margin-top: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f97316; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Hey <span id="name">Legend</span> 🔥</h1>
+        <p>Friendly roast alert. Tap to reveal.</p>
+        <button onclick="roast()">Roast me</button>
+        <div class="roast" id="roast"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'Legend';
+        document.getElementById('name').textContent = name;
+        const roasts = [
+            'You bring the chaos, but we love you for it.',
+            'If procrastination were an olympics, you would medal.',
+            'Your vibe is 90% snacks and 10% miracles.',
+            'You are the human version of 1% battery — dramatic but iconic.'
+        ];
+
+        function roast() {
+            const line = roasts[Math.floor(Math.random() * roasts.length)];
+            document.getElementById('roast').textContent = line;
+        }
+    </script>
+</body>
+</html>

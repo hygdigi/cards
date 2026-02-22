@@ -3,131 +3,845 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MagicCards | Viral Greeting Generator</title>
+    <title>MagicCards — Send a Moment That Matters</title>
+    <meta name="description" content="Create personalized, interactive greeting cards and share them instantly. Birthdays, pranks, love notes, celebrations — make someone's day in seconds.">
+    <meta property="og:title" content="MagicCards — Send a Moment That Matters">
+    <meta property="og:description" content="Interactive greeting cards, personalized with their name. Share via WhatsApp, Instagram, anywhere.">
+    <meta property="og:image" content="https://magiccards.app/preview.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff4b6e; --sidebar-bg: #f8f9fa; --text-dark: #333; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
-
-        /* Sidebar & Search */
-        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid #eee; padding: 20px; display: flex; flex-direction: column; }
-        .search-box { 
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; 
-            margin-bottom: 20px; box-sizing: border-box; outline: none;
+        :root {
+            --bg: #0a0a0f;
+            --surface: #13131a;
+            --surface2: #1c1c26;
+            --border: rgba(255,255,255,0.07);
+            --primary: #ff4d6d;
+            --primary-glow: rgba(255, 77, 109, 0.25);
+            --secondary: #ff9a3c;
+            --accent-blue: #4d79ff;
+            --text: #f0f0f5;
+            --text-muted: #7a7a8c;
+            --text-dim: #3a3a4c;
+            --card-hover: #1f1f2e;
+            --radius: 20px;
+            --radius-sm: 12px;
         }
-        .search-box:focus { border-color: var(--primary); }
-        
-        #menu-container { flex: 1; overflow-y: auto; }
-        .menu-item { 
-            padding: 12px 15px; margin: 5px 0; color: var(--text-dark); 
-            text-decoration: none; border-radius: 8px; cursor: pointer; font-weight: 500; 
-        }
-        .menu-item:hover, .menu-item.active { background: #ffeef1; color: var(--primary); }
 
-        /* Main Content */
-        #main-content { flex: 1; overflow-y: auto; padding: 40px; background: #fff; }
-        .hero { background: linear-gradient(135deg, #ff4b6e, #ff8e8e); color: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .card-thumbnail { border: 1px solid #eee; border-radius: 15px; overflow: hidden; transition: 0.3s; cursor: pointer; background: #fff; position: relative; }
-        .card-thumbnail:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        
-        .thumbnail-img { height: 140px; background: #fff0f3; display: flex; justify-content: center; align-items: center; font-size: 3rem; }
-        .card-details { padding: 15px; }
-        .card-details h3 { margin: 0; font-size: 1rem; color: #333; }
-        
-        .badge { position: absolute; top: 10px; right: 10px; background: var(--primary); color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.6rem; font-weight: bold; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse, rgba(255,77,109,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── LAYOUT ── */
+        .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+        /* ── SIDEBAR ── */
+        #sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 6px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-tagline {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-left: 46px;
+            margin-top: -2px;
+        }
+
+        /* Search */
+        .search-wrap {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px 10px 38px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .search-wrap { position: relative; }
+        .search-icon {
+            position: absolute;
+            left: 36px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .search-input::placeholder { color: var(--text-muted); }
+
+        /* Nav */
+        .nav-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-weight: 600;
+            padding: 16px 24px 8px;
+        }
+
+        #menu-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--surface2) transparent;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover {
+            color: var(--text);
+            background: var(--surface2);
+        }
+
+        .menu-item.active {
+            color: var(--primary);
+            background: rgba(255,77,109,0.1);
+            border-color: rgba(255,77,109,0.2);
+        }
+
+        .menu-emoji { font-size: 1rem; width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-footer p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        /* ── MAIN ── */
+        #main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 48px;
+            max-width: 1200px;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            padding: 56px 56px;
+            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(255,77,109,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: 40%;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255,154,60,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,77,109,0.12);
+            border: 1px solid rgba(255,77,109,0.25);
+            border-radius: 999px;
+            padding: 5px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .hero-eyebrow span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            line-height: 1.65;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, var(--primary), #ff6b47);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 24px var(--primary-glow);
+            letter-spacing: -0.01em;
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255,77,109,0.4);
+        }
+
+        .btn-hero-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-hero-ghost:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255,77,109,0.06);
+        }
+
+        /* Stats strip */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            transition: border-color 0.2s;
+        }
+
+        .stat-item:hover { border-color: rgba(255,77,109,0.3); }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.03em;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Section headers */
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .section-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Card Grid */
+        #cardGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .card-thumb {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .card-thumb:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,77,109,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,77,109,0.15);
+        }
+
+        .card-thumb:hover .card-thumb-visual {
+            transform: scale(1.05);
+        }
+
+        .card-thumb-visual-wrap {
+            height: 130px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-thumb-visual {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .card-thumb-body {
+            padding: 14px 16px 16px;
+        }
+
+        .card-thumb-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        .card-thumb-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(255,77,109,0.15);
+            border: 1px solid rgba(255,77,109,0.3);
+            color: var(--primary);
+        }
+
+        /* How it works */
+        .how-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px 48px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-section::before {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(77,121,255,0.08) 0%, transparent 70%);
+        }
+
+        .how-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 28px;
+            position: relative;
+        }
+
+        .how-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+        }
+
+        .how-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .how-step-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 14px;
+        }
+
+        .how-step-icon { font-size: 1.6rem; margin-bottom: 10px; }
+
+        .how-step-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .how-step-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            #main { padding: 32px 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .app { flex-direction: column; }
+            #sidebar { width: 100%; min-width: unset; height: auto; position: relative; }
+            #menu-container { display: flex; flex-wrap: nowrap; overflow-x: auto; padding: 0 12px 12px; gap: 6px; }
+            .menu-item { white-space: nowrap; flex-shrink: 0; }
+            .nav-label { display: none; }
+            #main { padding: 24px 20px; }
+            .hero { padding: 36px 28px; }
+            .stats-strip { grid-template-columns: repeat(3, 1fr); }
+            .how-steps { grid-template-columns: repeat(2, 1fr); }
+            .how-steps::before { display: none; }
+            #cardGrid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero { animation: fadeUp 0.5s ease both; }
+        .stats-strip { animation: fadeUp 0.5s 0.1s ease both; }
+        #cardGrid { animation: fadeUp 0.5s 0.2s ease both; }
+
+        /* Color palette for card thumbnails */
+        .bg-rose { background: linear-gradient(135deg, #2a0e15, #1a0a0d); }
+        .bg-amber { background: linear-gradient(135deg, #1f1205, #150d03); }
+        .bg-emerald { background: linear-gradient(135deg, #031a0e, #021209); }
+        .bg-blue { background: linear-gradient(135deg, #060e2a, #040918); }
+        .bg-purple { background: linear-gradient(135deg, #130a2a, #0d0618); }
+        .bg-cyan { background: linear-gradient(135deg, #041820, #021015); }
+        .bg-orange { background: linear-gradient(135deg, #200b02, #160802); }
+        .bg-pink { background: linear-gradient(135deg, #1f0514, #15030e); }
     </style>
 </head>
 <body>
+<div class="app">
 
+    <!-- SIDEBAR -->
     <nav id="sidebar">
-        <h2 style="color:var(--primary);">MagicCards ❤️</h2>
-        <input type="text" class="search-box" id="searchInput" placeholder="Search cards..." onkeyup="handleSearch()">
-        
-        <div id="menu-container">
-            <div class="menu-item active" onclick="filterCards('all', this)">🏠 All Cards</div>
-            </div>
-    </nav>
-
-    <main id="main-content">
-        <div class="hero">
-            <h1>Make Someone Smile Today! 🚀</h1>
-            <p>Select a prank or a greeting, add their name, and send the link.</p>
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">✨</div>
+                <span class="logo-text">MagicCards</span>
+            </a>
+            <div class="logo-tagline">Send a moment that matters</div>
         </div>
 
-        <div id="cardGrid" class="grid">
+        <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search cards..." oninput="handleSearch()">
+        </div>
+
+        <div class="nav-label">Categories</div>
+        <div id="menu-container"></div>
+
+        <div class="sidebar-footer">
+            <p>31 cards & growing 🌍</p>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main id="main">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-eyebrow"><span></span> New — Share on any platform</div>
+            <h1>Make someone's day<br>with a <em>magic moment.</em></h1>
+            <p>Personalized, interactive greeting cards. Pick one, add their name, and share the link. It takes 10 seconds.</p>
+            <div class="hero-cta">
+                <button class="btn-hero-primary" onclick="surpriseMe()">🎲 Surprise me</button>
+                <button class="btn-hero-ghost" onclick="document.getElementById('cardGrid').scrollIntoView({behavior:'smooth'})">Browse all cards →</button>
             </div>
+        </section>
+
+        <!-- Stats -->
+        <div class="stats-strip">
+            <div class="stat-item">
+                <div class="stat-number">12k+</div>
+                <div class="stat-label">Magic links sent this week</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.9★</div>
+                <div class="stat-label">Average smile rating</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10s</div>
+                <div class="stat-label">Time to create & share</div>
+            </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="section-header">
+            <h2 class="section-title" id="sectionTitle">All Cards</h2>
+            <span class="section-count" id="sectionCount"></span>
+        </div>
+
+        <div id="cardGrid"></div>
+
+        <!-- How it works -->
+        <section class="how-section">
+            <div class="section-header">
+                <h2 class="section-title">How it works</h2>
+            </div>
+            <div class="how-steps">
+                <div class="how-step">
+                    <div class="how-step-num">1</div>
+                    <div class="how-step-icon">🎴</div>
+                    <div class="how-step-title">Pick a card</div>
+                    <div class="how-step-desc">Choose from 31 interactive experiences</div>
+                </div>
+                <div class="how-step">
+                    <div class="how-step-num">2</div>
+                    <div class="how-step-icon">✍️</div>
+                    <div class="how-step-title">Add their name</div>
+                    <div class="how-step-desc">The card becomes instantly personal</div>
+                </div>
+                <div class="how-step">
+                    <div class="how-step-num">3</div>
+                    <div class="how-step-icon">🔗</div>
+                    <div class="how-step-title">Get a magic link</div>
+                    <div class="how-step-desc">Copy it or share directly to WhatsApp</div>
+                </div>
+                <div class="how-step">
+                    <div class="how-step-num">4</div>
+                    <div class="how-step-icon">😍</div>
+                    <div class="how-step-title">Watch them react</div>
+                    <div class="how-step-desc">They tap, interact, and feel the love</div>
+                </div>
+            </div>
+        </section>
+
     </main>
+</div>
 
-    <script>
-        const sheetUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7Xp2IV6Zt4aMorOp9ivwlDIoO5bQFiFrIS4PCzEiBUeXmgK1WQj7egnZqB3skS7kUYJBE0040OAHh/pub?gid=0&single=true&output=csv');
-        
-        let allCardsData = [];
+<script>
+    const sheetUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7Xp2IV6Zt4aMorOp9ivwlDIoO5bQFiFrIS4PCzEiBUeXmgK1WQj7egnZqB3skS7kUYJBE0040OAHh/pub?gid=0&single=true&output=csv');
 
-        async function init() {
-            try {
-                const response = await fetch(sheetUrl);
-                const csvText = await response.text();
-                const rows = csvText.split('\n').slice(1);
-                
-                allCardsData = rows.map(row => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    return {
-                        title: cols[0]?.replace(/"/g, '').trim(),
-                        category: cols[1]?.replace(/"/g, '').trim(),
-                        emoji: cols[2]?.replace(/"/g, '').trim(),
-                        fileName: cols[3]?.replace(/"/g, '').trim()
-                    };
-                }).filter(c => c.title);
+    const localCardsData = [
+        { title: 'Impossible No', category: 'Valentine', emoji: '🌹', fileName: 'valentine/impossibleno.html', bg: 'bg-rose' },
+        { title: 'Birthday Blast', category: 'Birthday', emoji: '🎂', fileName: 'birthday/blast.html', bg: 'bg-amber' },
+        { title: 'Friendship Meter', category: 'Friendship', emoji: '🤝', fileName: 'friendship/forever.html', bg: 'bg-blue' },
+        { title: 'Sorry Bear', category: 'Apology', emoji: '🧸', fileName: 'apology/bear.html', bg: 'bg-amber' },
+        { title: 'Spin the Prank', category: 'Prank', emoji: '🎡', fileName: 'prank/spin.html', bg: 'bg-purple' },
+        { title: 'Launch Your Dream', category: 'Motivation', emoji: '🚀', fileName: 'motivation/rocket.html', bg: 'bg-blue' },
+        { title: 'Anniversary Timeline', category: 'Anniversary', emoji: '💞', fileName: 'anniversary/timeline.html', bg: 'bg-rose' },
+        { title: 'Gratitude Jar', category: 'Gratitude', emoji: '🙏', fileName: 'gratitude/thanks.html', bg: 'bg-emerald' },
+        { title: 'Friendly Roast', category: 'Roast', emoji: '🔥', fileName: 'roast/mildroast.html', bg: 'bg-orange' },
+        { title: 'Lucky Charm', category: 'Good Luck', emoji: '🍀', fileName: 'goodluck/lucky.html', bg: 'bg-emerald' },
+        { title: 'Secret Confession', category: 'Confession', emoji: '💌', fileName: 'confession/secret.html', bg: 'bg-pink' },
+        { title: 'Pun Generator', category: 'Jokes', emoji: '😂', fileName: 'jokes/pun.html', bg: 'bg-amber' },
+        { title: 'Fireworks Night', category: 'Celebration', emoji: '🎆', fileName: 'celebration/fireworks.html', bg: 'bg-purple' },
+        { title: 'Heartbeat Crush', category: 'Crush', emoji: '💓', fileName: 'crush/heartbeat.html', bg: 'bg-rose' },
+        { title: 'Focus Sprint', category: 'Study', emoji: '📚', fileName: 'study/focus.html', bg: 'bg-cyan' },
+        { title: 'Travel Postcard', category: 'Travel', emoji: '🧳', fileName: 'travel/postcard.html', bg: 'bg-emerald' },
+        { title: 'Level Up', category: 'Gaming', emoji: '🎮', fileName: 'gaming/levelup.html', bg: 'bg-blue' },
+        { title: 'Goal Cheer', category: 'Sports', emoji: '⚽', fileName: 'sports/goal.html', bg: 'bg-emerald' },
+        { title: 'Snack Picker', category: 'Food', emoji: '🍿', fileName: 'food/snack.html', bg: 'bg-orange' },
+        { title: 'Diwali Lights', category: 'Festival', emoji: '🪔', fileName: 'festival/diwali.html', bg: 'bg-amber' },
+        { title: 'Spooky Surprise', category: 'Halloween', emoji: '🎃', fileName: 'halloween/spooky.html', bg: 'bg-orange' },
+        { title: 'New Year Countdown', category: 'New Year', emoji: '🎊', fileName: 'newyear/countdown.html', bg: 'bg-purple' },
+        { title: 'Graduation Cap Toss', category: 'Graduation', emoji: '🎓', fileName: 'graduation/gradcap.html', bg: 'bg-blue' },
+        { title: 'Warm Welcome', category: 'Welcome', emoji: '👋', fileName: 'welcome/hello.html', bg: 'bg-emerald' },
+        { title: 'Miss You Echo', category: 'Miss You', emoji: '💌', fileName: 'missyou/echo.html', bg: 'bg-pink' },
+        { title: 'Big Congrats', category: 'Congrats', emoji: '🏆', fileName: 'congrats/trophy.html', bg: 'bg-amber' },
+        { title: 'Pep Talk', category: 'Encouragement', emoji: '🌟', fileName: 'encouragement/pep.html', bg: 'bg-cyan' },
+        { title: 'Paw Promise', category: 'Pets', emoji: '🐾', fileName: 'pet/paw.html', bg: 'bg-amber' },
+        { title: 'Playlist Mood', category: 'Music', emoji: '🎵', fileName: 'music/playlist.html', bg: 'bg-purple' },
+        { title: 'Movie Night', category: 'Movie', emoji: '🎬', fileName: 'movie/ticket.html', bg: 'bg-blue' },
+        { title: 'Break Reminder', category: 'Work', emoji: '☕', fileName: 'work/break.html', bg: 'bg-cyan' }
+    ];
 
-                buildDynamicMenu();
-                renderCards(allCardsData);
-            } catch (e) { console.error(e); }
+    let allCardsData = [];
+    let activeCategory = 'All';
+
+    async function init() {
+        try {
+            const res = await fetch(sheetUrl);
+            const csv = await res.text();
+            const rows = csv.split('\n').slice(1);
+            const sheetCards = rows.map(row => {
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                return {
+                    title: cols[0]?.replace(/"/g, '').trim(),
+                    category: cols[1]?.replace(/"/g, '').trim(),
+                    emoji: cols[2]?.replace(/"/g, '').trim(),
+                    fileName: cols[3]?.replace(/"/g, '').trim(),
+                    bg: 'bg-rose'
+                };
+            }).filter(c => c.title);
+            const map = new Map();
+            [...sheetCards, ...localCardsData].forEach(c => { if (c.fileName) map.set(c.fileName, c); });
+            allCardsData = Array.from(map.values());
+        } catch (e) {
+            allCardsData = localCardsData;
         }
+        buildMenu();
+        renderCards(allCardsData);
+    }
 
-        function buildDynamicMenu() {
-            const container = document.getElementById('menu-container');
-            const cats = [...new Set(allCardsData.map(c => c.category))];
-            cats.forEach(cat => {
-                if(!cat) return;
-                const div = document.createElement('div');
-                div.className = 'menu-item';
-                div.innerText = cat.charAt(0).toUpperCase() + cat.slice(1);
-                div.onclick = () => filterCards(cat, div);
-                container.appendChild(div);
-            });
+    function buildMenu() {
+        const container = document.getElementById('menu-container');
+        container.innerHTML = '';
+        const cats = ['All', ...new Set(allCardsData.map(c => c.category).filter(Boolean))];
+        cats.forEach(cat => {
+            const el = document.createElement('div');
+            el.className = 'menu-item' + (cat === 'All' ? ' active' : '');
+            const emoji = cat === 'All' ? '✨' : (allCardsData.find(c => c.category === cat)?.emoji || '📌');
+            el.innerHTML = `<span class="menu-emoji">${emoji}</span>${cat}`;
+            el.onclick = () => filterCards(cat, el);
+            container.appendChild(el);
+        });
+    }
+
+    function renderCards(cards) {
+        const grid = document.getElementById('cardGrid');
+        document.getElementById('sectionCount').textContent = `${cards.length} card${cards.length !== 1 ? 's' : ''}`;
+        if (!cards.length) {
+            grid.innerHTML = '<div class="empty-state">No cards found. Try a different search.</div>';
+            return;
         }
+        grid.innerHTML = '';
+        cards.forEach((card, i) => {
+            if (!card.fileName) return;
+            const div = document.createElement('div');
+            div.className = 'card-thumb';
+            div.style.animationDelay = `${i * 0.04}s`;
+            div.onclick = () => window.location.href = `create.html?file=${card.fileName}`;
+            div.innerHTML = `
+                <div class="card-thumb-visual-wrap">
+                    <div class="card-thumb-visual ${card.bg || 'bg-rose'}">${card.emoji}</div>
+                </div>
+                <div class="card-badge">✦ Live</div>
+                <div class="card-thumb-body">
+                    <div class="card-thumb-title">${card.title}</div>
+                    <div class="card-thumb-meta">${card.category} · Interactive</div>
+                </div>`;
+            grid.appendChild(div);
+        });
+    }
 
-        function renderCards(cards) {
-            const grid = document.getElementById('cardGrid');
-            grid.innerHTML = cards.length ? '' : '<p>No cards found matching your search.</p>';
-            cards.forEach(card => {
-                const item = document.createElement('div');
-                item.className = 'card-thumbnail';
-                item.onclick = () => window.location.href = `create.html?file=${card.fileName}`;
-                item.innerHTML = `
-                    <div class="badge">NEW</div>
-                    <div class="thumbnail-img">${card.emoji}</div>
-                    <div class="card-details"><h3>${card.title}</h3></div>
-                `;
-                grid.appendChild(item);
-            });
-        }
+    function filterCards(cat, el) {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        activeCategory = cat;
+        document.getElementById('sectionTitle').textContent = cat === 'All' ? 'All Cards' : cat;
+        const filtered = cat === 'All' ? allCardsData : allCardsData.filter(c => c.category === cat);
+        renderCards(filtered);
+    }
 
-        function handleSearch() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allCardsData.filter(c => c.title.toLowerCase().includes(term));
+    function handleSearch() {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        if (!term) {
+            const filtered = activeCategory === 'All' ? allCardsData : allCardsData.filter(c => c.category === activeCategory);
             renderCards(filtered);
+            return;
         }
+        const filtered = allCardsData.filter(c =>
+            c.title.toLowerCase().includes(term) ||
+            c.category.toLowerCase().includes(term)
+        );
+        renderCards(filtered);
+    }
 
-        function filterCards(cat, el) {
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            const filtered = cat === 'all' ? allCardsData : allCardsData.filter(c => c.category === cat);
-            renderCards(filtered);
-        }
+    function surpriseMe() {
+        if (!allCardsData.length) return;
+        const r = allCardsData[Math.floor(Math.random() * allCardsData.length)];
+        window.location.href = `create.html?file=${r.fileName}`;
+    }
 
-        init();
-    </script>
+    init();
+</script>
 </body>
 </html>

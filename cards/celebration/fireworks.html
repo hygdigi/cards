@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireworks Night 🎆</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at top, #0f172a, #1f2937);
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        .card {
+            text-align: center;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 30px;
+            border-radius: 24px;
+            max-width: 420px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        }
+        button {
+            border: none;
+            background: #f97316;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .spark {
+            position: fixed;
+            font-size: 1.5rem;
+            animation: pop 1.6s ease forwards;
+        }
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f97316; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Celebrate with <span id="name">You</span> 🎆</h1>
+        <p>Tap to launch fireworks.</p>
+        <button onclick="launch()">Launch fireworks</button>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'You';
+        document.getElementById('name').textContent = name;
+        const sparks = ['✨', '🎆', '🎇', '💥'];
+
+        function launch() {
+            for (let i = 0; i < 18; i += 1) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+                spark.style.left = `${10 + Math.random() * 80}vw`;
+                spark.style.top = `${10 + Math.random() * 80}vh`;
+                document.body.appendChild(spark);
+                setTimeout(() => spark.remove(), 1600);
+            }
+        }
+    </script>
+</body>
+</html>

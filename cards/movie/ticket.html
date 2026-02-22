@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Night 🎬</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #111827;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+        }
+        .card {
+            background: #1f2937;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        }
+        .ticket {
+            font-size: 3rem;
+        }
+        button {
+            border: none;
+            background: #f43f5e;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .pick { margin-top: 12px; font-weight: 600; }
+        .cta { margin-top: 16px; font-size: 0.9rem; }
+        .cta a { color: #f43f5e; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="ticket">🎟️</div>
+        <h1>Movie night with <span id="name">You</span></h1>
+        <p>Tap to reveal a genre.</p>
+        <button onclick="pick()">Pick genre</button>
+        <div class="pick" id="pick"></div>
+        <p class="cta"><a href="../../create.html">Create your own magic card →</a></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('n') || 'You';
+        document.getElementById('name').textContent = name;
+        const genres = ['Rom-com 💖', 'Action 🔥', 'Mystery 🕵️', 'Animated joy 🎈'];
+
+        function pick() {
+            const choice = genres[Math.floor(Math.random() * genres.length)];
+            document.getElementById('pick').textContent = choice;
+        }
+    </script>
+</body>
+</html>
