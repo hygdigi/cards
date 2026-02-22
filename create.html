@@ -3,229 +3,701 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Magic Card | MagicCards</title>
+    <title>Create Your Magic Card — MagicCards</title>
+    <meta name="description" content="Personalize your greeting card and get a shareable link in seconds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ff4b6e;
-            --bg: #fff0f3;
-            --success: #2ecc71;
+            --bg: #0a0a0f;
+            --surface: #13131a;
+            --surface2: #1c1c26;
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.14);
+            --primary: #ff4d6d;
+            --primary-glow: rgba(255, 77, 109, 0.25);
+            --secondary: #ff9a3c;
             --whatsapp: #25D366;
-            --muted: #6c757d;
-            --card: #ffffff;
-        }
-        * { box-sizing: border-box; }
-        
-        body { 
-            margin: 0; font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg); display: flex; 
-            justify-content: center; align-items: center; min-height: 100vh; 
+            --success: #22c55e;
+            --text: #f0f0f5;
+            --text-muted: #7a7a8c;
+            --text-dim: #3a3a4c;
+            --radius: 20px;
+            --radius-sm: 12px;
         }
 
-        .builder-container {
-            background: white; padding: 40px; border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 75, 110, 0.15);
-            width: 90%; max-width: 450px; text-align: center;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        h2 { color: var(--primary); margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 25px; font-size: 0.95rem; }
-
-        .subhead { color: var(--muted); font-size: 0.85rem; margin-top: -10px; }
-        
-        input {
-            width: 100%; padding: 15px; margin-bottom: 20px;
-            border: 2px solid #eee; border-radius: 12px;
-            font-size: 1rem; box-sizing: border-box; outline: none;
-            transition: 0.3s;
+        /* Ambient blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
         }
-        input:focus { border-color: var(--primary); }
+        .blob-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,77,109,0.1), transparent);
+            top: -200px; left: -100px;
+        }
+        .blob-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,154,60,0.07), transparent);
+            bottom: -100px; right: -100px;
+        }
 
+        /* Back link */
+        .back-link {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+        .back-link:hover { color: var(--text); }
+
+        /* Main container */
+        .container {
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Card preview strip */
+        .card-preview-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            animation: fadeDown 0.4s ease both;
+        }
+
+        .card-preview-emoji {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--surface2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .card-preview-info {}
+        .card-preview-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+        .card-preview-cat {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .card-preview-change {
+            margin-left: auto;
+            font-size: 0.78rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .card-preview-change:hover { text-decoration: underline; }
+
+        /* Panel */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 36px 36px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .panel-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .panel-body { padding: 28px 36px 36px; }
+
+        /* Input */
+        .field-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .name-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .name-input::placeholder { color: var(--text-dim); }
+
+        .name-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .char-hint {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        /* Buttons */
         .btn {
-            border: none; padding: 15px 30px; border-radius: 12px; 
-            font-size: 1.1rem; font-weight: bold; cursor: pointer; 
-            width: 100%; transition: 0.3s; margin-bottom: 10px;
+            width: 100%;
+            padding: 15px 24px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--primary), #ff6b47);
+            color: white;
+            box-shadow: 0 4px 24px var(--primary-glow);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255,77,109,0.4);
+        }
+
+        .btn-generate:active { transform: translateY(0); }
+
+        .btn-whatsapp {
+            background: #128c7e;
             color: white;
         }
-        .btn-primary { background: var(--primary); }
-        .btn-primary:hover { background: #ff335c; transform: translateY(-2px); }
-        
-        .btn-whatsapp { background: var(--whatsapp); display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-whatsapp:hover { background: #128c7e; }
+        .btn-whatsapp:hover { background: #0e7368; transform: translateY(-1px); }
 
-        .btn-copy { background: var(--success); }
+        .btn-copy {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-copy:hover { border-color: var(--success); color: var(--success); }
 
-        .result-box {
-            background: #fdf2f4; padding: 20px; border-radius: 15px;
-            margin-top: 10px; border: 2px dashed var(--primary);
+        .btn-copy.copied {
+            border-color: var(--success);
+            color: var(--success);
+            background: rgba(34,197,94,0.08);
         }
 
-        .hidden { display: none !important; }
+        .share-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
-        /* Small Preview Link */
-        #previewLink { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.85rem; }
+        .btn-sm {
+            background: var(--surface2);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 11px 16px;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
 
-        .progress {
-            background: #ffe1e7;
-            height: 10px;
-            border-radius: 20px;
+        .btn-sm:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
+            transform: translateY(-1px);
+        }
+
+        /* URL display */
+        .url-box {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .url-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: 'DM Sans', sans-serif;
             overflow: hidden;
-            margin: 16px 0 8px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .progress-bar {
+
+        .url-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Progress */
+        .progress-wrap {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .progress-pct {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .progress-track {
+            height: 4px;
+            background: var(--surface2);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #ff4b6e, #ff8e8e);
-            transition: width 0.4s ease;
-        }
-        .share-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 12px;
-        }
-        .share-grid .btn {
-            margin-bottom: 0;
-            font-size: 0.95rem;
-        }
-        .badge-row {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .badge {
-            background: #fff5f7;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             border-radius: 999px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
+            transition: width 0.5s ease;
+        }
+
+        /* Test link */
+        .test-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            text-decoration: none;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .test-link:hover {
             color: var(--primary);
-            font-weight: 600;
+            background: rgba(255,77,109,0.06);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider-text {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* Reset btn */
+        .btn-reset {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+            margin-top: 16px;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+        .btn-reset:hover { color: var(--text-muted); }
+
+        /* Hidden */
+        .hidden { display: none !important; }
+
+        /* Animations */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel { animation: fadeUp 0.4s ease both; }
+
+        @media (max-width: 480px) {
+            .panel-header { padding: 28px 24px 20px; }
+            .panel-body { padding: 20px 24px 28px; }
+            .panel-title { font-size: 1.5rem; }
+            body { padding: 16px; align-items: flex-start; padding-top: 64px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="builder-container">
-        <div id="inputSection">
-            <h2>Personalize It ✨</h2>
-            <p>Type the name of the person you want to surprise!</p>
-            <div class="badge-row">
-                <span class="badge">Fast</span>
-                <span class="badge">Zero-cost</span>
-                <span class="badge">Share-ready</span>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <a href="index.html" class="back-link">← Back to gallery</a>
+
+    <div class="container">
+
+        <!-- Card preview strip -->
+        <div class="card-preview-strip" id="previewStrip">
+            <div class="card-preview-emoji" id="previewEmoji">✨</div>
+            <div class="card-preview-info">
+                <div class="card-preview-title" id="previewTitle">Loading card...</div>
+                <div class="card-preview-cat" id="previewCat">Interactive card</div>
             </div>
-            <input type="text" id="recipientName" placeholder="Enter Name (e.g. Sonal)" autofocus>
-            <button class="btn btn-primary" onclick="generateLink()">Generate Magic Link</button>
-            <p class="subhead">Tip: People share 2x more when the message feels personal.</p>
+            <a href="index.html" class="card-preview-change">Change →</a>
         </div>
 
-        <div id="resultSection" class="hidden">
-            <h2>It's Ready! ❤️</h2>
-            <p>Your magic link is being prepared. Stay for the reveal!</p>
-            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-            <p class="subhead" id="statusText">Packing confetti... ✨</p>
-            
-            <div class="result-box">
-                <input type="text" id="finalUrlDisplay" readonly style="background: white; border: 1px solid #ddd; margin-bottom: 10px;">
-                
-                <button class="btn btn-copy" onclick="copyToClipboard()">📋 Copy Link</button>
-                
-                <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
-                    <svg style="width:20px; fill:white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.481 5.229 3.481 8.406c0 6.555-5.332 11.887-11.888 11.887-2.01 0-3.987-.506-5.741-1.464l-6.143 1.688zm6.033-4.035c1.564.933 3.523 1.423 5.535 1.423 5.835 0 10.581-4.746 10.581-10.581 0-2.822-1.1-5.474-3.097-7.471-1.997-1.998-4.649-3.098-7.472-3.098-5.835 0-10.581 4.746-10.581 10.581 0 2.083.541 4.111 1.565 5.88l-1.026 3.744 3.845-1.057zm12.512-8.312c-.041-.067-.15-.108-.315-.191-.166-.083-.981-.484-1.133-.538-.151-.054-.262-.083-.373.084-.111.166-.43.538-.527.65-.097.112-.194.125-.359.041-.166-.083-.7-.258-1.334-.824-.495-.441-.828-.985-.925-1.15-.097-.166-.01-.256.072-.339.074-.075.166-.191.249-.286.083-.095.111-.162.166-.27.055-.109.027-.204-.013-.287-.041-.084-.373-.9-.511-1.233-.134-.326-.27-.282-.373-.287-.096-.005-.207-.006-.318-.006-.111 0-.292.042-.444.208-.153.166-.583.57-.583 1.391 0 .822.597 1.618.681 1.729.083.111 1.176 1.795 2.848 2.517.398.172.708.274.95.351.4.127.763.109 1.05.066.32-.048.981-.401 1.119-.788.138-.387.138-.718.097-.788z"/></svg>
-                    Send on WhatsApp
-                </button>
-                <div class="share-grid">
-                    <button class="btn btn-primary" onclick="shareToTelegram()">💬 Telegram</button>
-                    <button class="btn btn-primary" onclick="shareToTwitter()">🐦 X (Twitter)</button>
+        <!-- Main panel -->
+        <div class="panel">
+
+            <!-- INPUT STATE -->
+            <div id="inputSection">
+                <div class="panel-header">
+                    <div class="panel-eyebrow">Step 1 of 2 — Personalize</div>
+                    <h1 class="panel-title">Who's the lucky one?</h1>
+                    <p class="panel-subtitle">Enter their name and we'll weave it into the experience. It'll feel made just for them.</p>
+                </div>
+                <div class="panel-body">
+                    <label class="field-label" for="recipientName">Their name</label>
+                    <div class="input-wrap">
+                        <input 
+                            type="text" 
+                            id="recipientName" 
+                            class="name-input"
+                            placeholder="e.g. Alex, Mom, Bestie..." 
+                            maxlength="30"
+                            autocomplete="off"
+                            autofocus
+                            oninput="updateCharHint()"
+                            onkeydown="if(event.key==='Enter') generateLink()"
+                        >
+                        <span class="char-hint" id="charHint">30</span>
+                    </div>
+                    <button class="btn btn-generate" onclick="generateLink()">
+                        ✨ Create Magic Link
+                    </button>
+                    <p style="text-align:center; font-size: 0.75rem; color: var(--text-dim); margin-top: 12px;">
+                        Free forever · No account needed · Works anywhere
+                    </p>
                 </div>
             </div>
-            
-            <p style="margin-top:20px;">
-                <a href="#" id="testLink" target="_blank">👁️ Click here to test it yourself</a>
-            </p>
-            
-            <button class="btn btn-primary" onclick="location.reload()" style="background:#6c757d; font-size: 0.9rem; margin-top:20px;">
-                Create Another Card
-            </button>
+
+            <!-- RESULT STATE -->
+            <div id="resultSection" class="hidden">
+                <div class="panel-header">
+                    <div class="panel-eyebrow">Step 2 of 2 — Share</div>
+                    <h1 class="panel-title">Your link is ready 🎉</h1>
+                    <p class="panel-subtitle">Send it anywhere. When they open it, their name will be woven right in.</p>
+                </div>
+                <div class="panel-body">
+
+                    <div class="progress-wrap">
+                        <div class="progress-header">
+                            <span class="progress-label" id="progressLabel">Preparing your card...</span>
+                            <span class="progress-pct" id="progressPct">0%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="url-box">
+                        <div class="url-dot"></div>
+                        <input type="text" id="finalUrlDisplay" readonly>
+                    </div>
+
+                    <button class="btn btn-copy" id="copyBtn" onclick="copyToClipboard()">
+                        📋 Copy link
+                    </button>
+
+                    <div class="divider"><span class="divider-text">or share directly</span></div>
+
+                    <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.481 5.229 3.481 8.406c0 6.555-5.332 11.887-11.888 11.887-2.01 0-3.987-.506-5.741-1.464l-6.143 1.688zm6.033-4.035c1.564.933 3.523 1.423 5.535 1.423 5.835 0 10.581-4.746 10.581-10.581 0-2.822-1.1-5.474-3.097-7.471-1.997-1.998-4.649-3.098-7.472-3.098-5.835 0-10.581 4.746-10.581 10.581 0 2.083.541 4.111 1.565 5.88l-1.026 3.744 3.845-1.057z"/></svg>
+                        Share on WhatsApp
+                    </button>
+
+                    <div class="share-row">
+                        <button class="btn-sm" onclick="shareToTelegram()">✈️ Telegram</button>
+                        <button class="btn-sm" onclick="shareToTwitter()">🐦 X (Twitter)</button>
+                    </div>
+
+                    <a href="#" id="testLink" target="_blank" class="test-link">
+                        👁 Preview the card yourself →
+                    </a>
+
+                    <button class="btn-reset" onclick="location.reload()">
+                        ← Create another card
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // 1. Get the card path from the URL (e.g., valentine/impossibleno.html)
+        const cardMeta = {
+            'valentine/impossibleno.html':   { title: 'Impossible No',        emoji: '🌹', cat: 'Valentine' },
+            'birthday/blast.html':           { title: 'Birthday Blast',        emoji: '🎂', cat: 'Birthday' },
+            'friendship/forever.html':       { title: 'Friendship Meter',      emoji: '🤝', cat: 'Friendship' },
+            'apology/bear.html':             { title: 'Sorry Bear',            emoji: '🧸', cat: 'Apology' },
+            'prank/spin.html':               { title: 'Spin the Prank',        emoji: '🎡', cat: 'Prank' },
+            'motivation/rocket.html':        { title: 'Launch Your Dream',     emoji: '🚀', cat: 'Motivation' },
+            'anniversary/timeline.html':     { title: 'Anniversary Timeline',  emoji: '💞', cat: 'Anniversary' },
+            'gratitude/thanks.html':         { title: 'Gratitude Jar',         emoji: '🙏', cat: 'Gratitude' },
+            'roast/mildroast.html':          { title: 'Friendly Roast',        emoji: '🔥', cat: 'Roast' },
+            'goodluck/lucky.html':           { title: 'Lucky Charm',           emoji: '🍀', cat: 'Good Luck' },
+            'confession/secret.html':        { title: 'Secret Confession',     emoji: '💌', cat: 'Confession' },
+            'jokes/pun.html':                { title: 'Pun Generator',         emoji: '😂', cat: 'Jokes' },
+            'celebration/fireworks.html':    { title: 'Fireworks Night',       emoji: '🎆', cat: 'Celebration' },
+            'crush/heartbeat.html':          { title: 'Heartbeat Crush',       emoji: '💓', cat: 'Crush' },
+            'study/focus.html':              { title: 'Focus Sprint',          emoji: '📚', cat: 'Study' },
+            'travel/postcard.html':          { title: 'Travel Postcard',       emoji: '🧳', cat: 'Travel' },
+            'gaming/levelup.html':           { title: 'Level Up',              emoji: '🎮', cat: 'Gaming' },
+            'sports/goal.html':              { title: 'Goal Cheer',            emoji: '⚽', cat: 'Sports' },
+            'food/snack.html':               { title: 'Snack Picker',          emoji: '🍿', cat: 'Food' },
+            'festival/diwali.html':          { title: 'Diwali Lights',         emoji: '🪔', cat: 'Festival' },
+            'halloween/spooky.html':         { title: 'Spooky Surprise',       emoji: '🎃', cat: 'Halloween' },
+            'newyear/countdown.html':        { title: 'New Year Countdown',    emoji: '🎊', cat: 'New Year' },
+            'graduation/gradcap.html':       { title: 'Graduation Cap Toss',   emoji: '🎓', cat: 'Graduation' },
+            'welcome/hello.html':            { title: 'Warm Welcome',          emoji: '👋', cat: 'Welcome' },
+            'missyou/echo.html':             { title: 'Miss You Echo',         emoji: '💌', cat: 'Miss You' },
+            'congrats/trophy.html':          { title: 'Big Congrats',          emoji: '🏆', cat: 'Congrats' },
+            'encouragement/pep.html':        { title: 'Pep Talk',              emoji: '🌟', cat: 'Encouragement' },
+            'pet/paw.html':                  { title: 'Paw Promise',           emoji: '🐾', cat: 'Pets' },
+            'music/playlist.html':           { title: 'Playlist Mood',         emoji: '🎵', cat: 'Music' },
+            'movie/ticket.html':             { title: 'Movie Night',           emoji: '🎬', cat: 'Movie' },
+            'work/break.html':               { title: 'Break Reminder',        emoji: '☕', cat: 'Work' },
+        };
+
         const params = new URLSearchParams(window.location.search);
-        const fileNameFromSheet = params.get('file') || 'valentine/impossibleno.html';
-        const statusText = document.getElementById('statusText');
-        const progressBar = document.getElementById('progressBar');
+        const fileParam = params.get('file') || 'valentine/impossibleno.html';
+        const normalizedFile = fileParam.startsWith('cards/') ? fileParam.slice(6) : fileParam;
+
+        // Populate preview strip
+        const meta = cardMeta[normalizedFile] || { title: 'Magic Card', emoji: '✨', cat: 'Interactive' };
+        document.getElementById('previewEmoji').textContent = meta.emoji;
+        document.getElementById('previewTitle').textContent = meta.title;
+        document.getElementById('previewCat').textContent = meta.cat + ' · Interactive';
+
+        function updateCharHint() {
+            const val = document.getElementById('recipientName').value;
+            document.getElementById('charHint').textContent = 30 - val.length;
+        }
 
         function generateLink() {
             const name = document.getElementById('recipientName').value.trim();
             if (!name) {
-                alert("Please enter a name first!");
+                document.getElementById('recipientName').style.borderColor = 'var(--primary)';
+                document.getElementById('recipientName').focus();
+                document.getElementById('recipientName').placeholder = 'Please enter a name first ✦';
                 return;
             }
 
-            // Hide Input, Show Result
+            // Build URL
+            const origin = window.location.origin !== 'null' ? window.location.origin : '';
+            const pathDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const cleanFile = normalizedFile.startsWith('cards/') ? normalizedFile : `cards/${normalizedFile}`;
+            const finalLink = `${origin}${pathDir}/${cleanFile}?n=${encodeURIComponent(name)}`;
+
+            document.getElementById('finalUrlDisplay').value = finalLink;
+            document.getElementById('testLink').href = finalLink;
+
+            // Switch panels
             document.getElementById('inputSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('hidden');
 
-            // 2. Build the Final Viral URL
-            // This detects the directory automatically (works on PC and GitHub)
-            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-            const cleanFilePath = fileNameFromSheet.startsWith('cards/') ? fileNameFromSheet : `cards/${fileNameFromSheet}`;
-            const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : '';
-            const finalLink = `${origin}${currentDir}/${cleanFilePath}?n=${encodeURIComponent(name)}`;
-
-            // 3. Update UI
-            document.getElementById('finalUrlDisplay').value = finalLink;
-            document.getElementById('testLink').href = finalLink;
-            runAdGate();
+            // Animate progress
+            animateProgress();
         }
 
-        function runAdGate() {
+        function animateProgress() {
             const steps = [
-                { text: 'Packing confetti... ✨', progress: 30 },
-                { text: 'Polishing the magic link... 🔗', progress: 60 },
-                { text: 'Unlocking share power... 🚀', progress: 100 }
+                { label: 'Weaving in the name...', pct: 35 },
+                { label: 'Adding the magic touch...', pct: 70 },
+                { label: 'Polishing the experience...', pct: 100 }
             ];
-            let stepIndex = 0;
-            statusText.textContent = steps[0].text;
-            progressBar.style.width = `${steps[0].progress}%`;
-            const interval = setInterval(() => {
-                stepIndex += 1;
-                if (stepIndex >= steps.length) {
-                    clearInterval(interval);
-                    statusText.textContent = 'Ready to share! 🎉';
+            let i = 0;
+            const label = document.getElementById('progressLabel');
+            const pct = document.getElementById('progressPct');
+            const fill = document.getElementById('progressFill');
+
+            function next() {
+                if (i >= steps.length) {
+                    label.textContent = 'Ready to send! ✨';
                     return;
                 }
-                statusText.textContent = steps[stepIndex].text;
-                progressBar.style.width = `${steps[stepIndex].progress}%`;
-            }, 700);
+                label.textContent = steps[i].label;
+                pct.textContent = steps[i].pct + '%';
+                fill.style.width = steps[i].pct + '%';
+                i++;
+                setTimeout(next, 650);
+            }
+            next();
         }
 
         function copyToClipboard() {
-            const copyText = document.getElementById("finalUrlDisplay");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // Mobile support
-            navigator.clipboard.writeText(copyText.value);
-            alert("Link copied! Now paste it in your chat. 🚀");
+            const url = document.getElementById('finalUrlDisplay').value;
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = '📋 Copy link';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function getShareUrl() {
+            return document.getElementById('finalUrlDisplay').value;
         }
 
         function shareToWhatsApp() {
-            const url = document.getElementById('finalUrlDisplay').value;
-            const message = encodeURIComponent("Hey! I made a special surprise just for you. Open this: " + url);
-            window.open(`https://wa.me/?text=${message}`, '_blank');
+            const url = getShareUrl();
+            const name = document.getElementById('recipientName')?.value || '';
+            const msg = encodeURIComponent(`Hey! I made something special for you 🎁 Open this: ${url}`);
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
         }
 
         function shareToTelegram() {
-            const url = document.getElementById('finalUrlDisplay').value;
-            const message = encodeURIComponent("I made a magic greeting for you! Tap here: " + url);
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${message}`, '_blank');
+            const url = getShareUrl();
+            const msg = encodeURIComponent(`I made you something interactive ✨`);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${msg}`, '_blank');
         }
 
         function shareToTwitter() {
-            const url = document.getElementById('finalUrlDisplay').value;
-            const text = encodeURIComponent("I just made a magic greeting! 🔥");
+            const url = getShareUrl();
+            const text = encodeURIComponent(`I just made the most personal greeting card 🔥 Check this out:`);
             window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank');
         }
     </script>
